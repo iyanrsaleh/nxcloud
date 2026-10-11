@@ -9,6 +9,8 @@ dist/
 *.log
 Plan.md
 Plan-*.md
+digram.md
+package-lock.json
 .env
 .env.*
 !.env.example
