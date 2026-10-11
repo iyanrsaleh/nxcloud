@@ -1,4 +1,4 @@
-# Materi Endpoint — Perencanaan Dasbor NxCloudflare
+# Materi Endpoint — Perencanaan Dasbor nxcloud
 
 Dokumen ini merangkum **semua endpoint yang sudah ada** + mapping ke **widget/halaman dasbor**.  
 Dasbor UI (konsep visual) = tugas Anda; data & client sudah siap.
@@ -7,8 +7,8 @@ Dasbor UI (konsep visual) = tugas Anda; data & client sudah siap.
 | --- | --- |
 | Base lokal | `http://127.0.0.1:8787` |
 | Base publik | `https://nx.tirtamoolango.id` |
-| Client Desktop | `Teritip/Desktop/lib/nxcloudflareApi.js` |
-| Config Desktop | `NEXA.nxcloudflareApi` → `http://127.0.0.1:8787` |
+| Client Desktop | `Teritip/Desktop/lib/nxcloudApi.js` |
+| Config Desktop | `NEXA.nxcloudApi` → `http://127.0.0.1:8787` |
 | Error JSON | `{ "error": "pesan" }` |
 
 > **Keamanan:** endpoint **kontrol** (`stop` / `restart`) hanya localhost + `api.allowControl: true`. Jangan andalkan untuk tombol di halaman publik tanpa auth.
@@ -52,7 +52,7 @@ Alias legacy (sama data, tanpa prefix `/api`):
 ```json
 {
   "status": "ok",
-  "service": "NxCloudflare"
+  "service": "nxcloud"
 }
 ```
 
@@ -130,13 +130,13 @@ Alias legacy (sama data, tanpa prefix `/api`):
 
 ```json
 {
-  "path": "D:\\Framework\\CLI\\NxCloudflare\\config\\nxcloudflare.json",
+  "path": "D:\\Framework\\CLI\\nxcloud\\config\\nxcloud.json",
   "server": { "host": "127.0.0.1", "port": 8787 },
   "cloudflare": {
     "enabled": true,
     "mode": "named",
     "hostname": "nx.tirtamoolango.id",
-    "tunnelName": "nxcloudflare",
+    "tunnelName": "nxcloud",
     "service": "http://127.0.0.1:8787",
     "cloudflaredConfig": ".credentials/config.yml"
   },
@@ -165,7 +165,7 @@ Alias legacy (sama data, tanpa prefix `/api`):
 ```json
 {
   "source": "server",
-  "file": "D:\\Framework\\CLI\\NxCloudflare\\logs\\server.log",
+  "file": "D:\\Framework\\CLI\\nxcloud\\logs\\server.log",
   "lines": [
     "[2026-09-10T05:21:40.765Z] [INFO] Server listening on http://127.0.0.1:8787"
   ]
@@ -205,9 +205,9 @@ Gagal umum:
 ## 3. Client Desktop (cara panggil)
 
 ```js
-import { nx, createNxCloudflareApi } from '/lib/nxcloudflareApi.js';
+import { nx, createnxcloudApi } from '/lib/nxcloudApi.js';
 
-// default → NEXA.nxcloudflareApi atau http://127.0.0.1:8787
+// default → NEXA.nxcloudApi atau http://127.0.0.1:8787
 await nx.getHealth();
 await nx.getStatus();
 await nx.getTunnel();
@@ -215,7 +215,7 @@ await nx.getConfig();
 await nx.getLogs({ source: 'tunnel', lines: 100 });
 
 // opsional base eksplisit
-const api = createNxCloudflareApi('http://127.0.0.1:8787');
+const api = createnxcloudApi('http://127.0.0.1:8787');
 await api.getStatus();
 ```
 
@@ -236,7 +236,7 @@ await api.getStatus();
 Berdasarkan data yang tersedia **sekarang** (tanpa endpoint baru):
 
 ```text
-Desktop → menu "NxCloudflare"
+Desktop → menu "nxcloud"
 │
 ├── Overview          ← getStatus() + getHealth()
 │     • badge server / tunnel
@@ -296,7 +296,7 @@ Kalau konsep halaman sudah digambar, tinggal wiring ke method di §3.
 ## 8. Rancangan v2 — User daftar domain + lokasi proyek (BELUM ADA)
 
 > **Status:** usulan perencanaan. **Belum diimplementasi.**  
-> Sekarang hostname hanya di `config/nxcloudflare.json` + config cloudflared (manual).
+> Sekarang hostname hanya di `config/nxcloud.json` + config cloudflared (manual).
 
 ### 8.1 Konsep
 

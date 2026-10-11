@@ -9,22 +9,22 @@ function sourcePackageRoot() {
 }
 
 /**
- * Root of the NxCloudflare project.
+ * Root of the nxcloud project.
  * Source mode (`node src/index.js` / `npm link`): folder proyek.
- * SEA mode (dist/nxcloudflare.exe): folder tempat .exe berada, supaya
+ * SEA mode (dist/nxcloud.exe): folder tempat .exe berada, supaya
  * config/logs/.runtime/.credentials tetap portable di sebelah .exe.
  */
 export const ROOT_DIR = isSea() ? path.dirname(process.execPath) : sourcePackageRoot();
 
 export const CONFIG_DIR = path.join(ROOT_DIR, 'config');
-export const CONFIG_FILE = path.join(CONFIG_DIR, 'nxcloudflare.json');
+export const CONFIG_FILE = path.join(CONFIG_DIR, 'nxcloud.json');
 export const ROUTES_FILE = path.join(CONFIG_DIR, 'routes.json');
 export const LOGS_DIR = path.join(ROOT_DIR, 'logs');
 export const RUNTIME_DIR = path.join(ROOT_DIR, '.runtime');
 
 export const SERVER_PID_FILE = path.join(RUNTIME_DIR, 'server.pid');
 export const TUNNEL_PID_FILE = path.join(RUNTIME_DIR, 'tunnel.pid');
-export const MASTER_PID_FILE = path.join(RUNTIME_DIR, 'nxcloudflare.pid');
+export const MASTER_PID_FILE = path.join(RUNTIME_DIR, 'nxcloud.pid');
 export const STATE_FILE = path.join(RUNTIME_DIR, 'state.json');
 
 export const SERVER_LOG = path.join(LOGS_DIR, 'server.log');

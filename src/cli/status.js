@@ -20,7 +20,7 @@ export async function statusCommand() {
     : 'STOPPED';
 
   console.log(`
-NxCloudflare
+nxcloud
 ----------------------------
 Server      : ${serverStatus}
 Host        : ${state.server?.host || config.server.host}

@@ -90,7 +90,7 @@ async function handleRequest(req, res, hooks) {
 
   if (path === '/' || path === '') {
     sendJson(res, 200, {
-      service: 'NxCloudflare',
+      service: 'nxcloud',
       message: 'Local Node.js server with Cloudflare Tunnel',
       endpoints: [
         '/',

@@ -114,7 +114,7 @@ export async function handleApi(ctx) {
     return {
       status: 200,
       body: {
-        service: 'NxCloudflare API',
+        service: 'nxcloud API',
         version: '0.2.0',
         endpoints: [
           'GET /api/health',
@@ -143,7 +143,7 @@ export async function handleApi(ctx) {
   if (method === 'GET' && (path === '/api/health' || path === '/health')) {
     return {
       status: 200,
-      body: { status: 'ok', service: 'NxCloudflare' }
+      body: { status: 'ok', service: 'nxcloud' }
     };
   }
 

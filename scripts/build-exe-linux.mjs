@@ -8,11 +8,11 @@ import { build } from "esbuild";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = path.join(root, "dist");
-const workDir = path.join(root, ".nxcloudflare-exe-build");
-const bundlePath = path.join(workDir, "nxcloudflare.cjs");
-const blobPath = path.join(workDir, "nxcloudflare.blob");
+const workDir = path.join(root, ".nxcloud-exe-build");
+const bundlePath = path.join(workDir, "nxcloud.cjs");
+const blobPath = path.join(workDir, "nxcloud.blob");
 const seaConfigPath = path.join(workDir, "sea-config.json");
-const exePath = path.join(distDir, "nxcloudflare");
+const exePath = path.join(distDir, "nxcloud");
 const sentinelFuse = "NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2";
 
 function run(command, args) {
@@ -42,7 +42,7 @@ await fs.mkdir(workDir, { recursive: true });
 
 try {
     await build({
-        entryPoints: [path.join(root, "bin", "nxcloudflare.js")],
+        entryPoints: [path.join(root, "bin", "nxcloud.js")],
         outfile: bundlePath,
         bundle: true,
         platform: "node",
@@ -50,7 +50,7 @@ try {
         target: "node20",
         define: {
             "import.meta.url": JSON.stringify(
-                "file:///__nxcloudflare_sea__/src/utils/paths.js"
+                "file:///__nxcloud_sea__/src/utils/paths.js"
             ),
         },
         logLevel: "info",
@@ -81,13 +81,13 @@ try {
 
     const executable = await fs.readFile(exePath);
     const checksum = createHash("sha256").update(executable).digest("hex");
-    await fs.writeFile(path.join(distDir, "SHA256SUMS.txt"), `${checksum}  nxcloudflare\n`);
+    await fs.writeFile(path.join(distDir, "SHA256SUMS.txt"), `${checksum}  nxcloud\n`);
 
     console.log(`\nSelesai: ${exePath}`);
     console.log(`SHA-256: ${checksum}`);
     console.log(
         `\nCatatan: taruh .tools/cloudflared (tanpa ekstensi, chmod +x) di ` +
-        `sebelah nxcloudflare (dist/.tools/cloudflared) sebelum distribusi.`
+        `sebelah nxcloud (dist/.tools/cloudflared) sebelum distribusi.`
     );
 } finally {
     await fs.rm(workDir, { recursive: true, force: true });

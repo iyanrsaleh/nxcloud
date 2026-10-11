@@ -12,7 +12,7 @@ const DEFAULTS = {
     enabled: true,
     mode: 'quick',
     rootDomains: [],
-    tunnelName: 'nxcloudflare',
+    tunnelName: 'nxcloud',
     service: 'http://127.0.0.1:8787',
     credentialsFile: '',
     cloudflaredConfig: '.credentials/config.yml',

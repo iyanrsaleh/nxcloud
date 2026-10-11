@@ -7,12 +7,12 @@ import { hasApiToken, resolveTunnelTarget, createCnameRecord } from './api.js';
 const execFileAsync = promisify(execFile);
 
 /**
- * Root domains this NxCloudflare instance is allowed to manage DNS for,
+ * Root domains this nxcloud instance is allowed to manage DNS for,
  * set explicitly via `cloudflare.rootDomains` config. `cloudflared tunnel
  * route dns` accepts ANY hostname string and will happily create a CNAME
  * for it under whatever zone matches in the account, with no validation
  * and no way to undo from the CLI (see Plan-domain-onboarding.md §5.4
- * incident) — so NxCloudflare enforces its own allow-list before ever
+ * incident) — so nxcloud enforces its own allow-list before ever
  * calling it.
  */
 export function getManagedRootDomains() {
@@ -132,7 +132,7 @@ export async function addDnsRoute(hostname) {
       created: false,
       alreadyExisted: false,
       error: /certificate|cert\.pem|not logged in/i.test(detail)
-        ? `${detail} — isi API token untuk jalur alternatif: nxcloudflare config set cloudflare.apiToken <token>`
+        ? `${detail} — isi API token untuk jalur alternatif: nxcloud config set cloudflare.apiToken <token>`
         : err.message,
       output: `${err.stdout || ''}${err.stderr || ''}`.trim()
     };

@@ -26,7 +26,7 @@ async function cfFetch(path, { method = 'GET', body } = {}) {
   const token = getApiToken();
   if (!token) {
     const err = new Error(
-      'cloudflare.apiToken belum diisi — jalankan: nxcloudflare config set cloudflare.apiToken <token>'
+      'cloudflare.apiToken belum diisi — jalankan: nxcloud config set cloudflare.apiToken <token>'
     );
     err.code = 'BAD_REQUEST';
     throw err;

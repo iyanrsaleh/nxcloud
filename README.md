@@ -1,46 +1,46 @@
-# NxCloudflare
+# nxcloud
 
-**NxCloudflare** adalah server Node.js lokal yang dirancang untuk menjalankan layanan di PC dan menyediakan akses jaringan melalui **Cloudflare Tunnel**.
+**nxcloud** adalah server Node.js lokal yang dirancang untuk menjalankan layanan di PC dan menyediakan akses jaringan melalui **Cloudflare Tunnel**.
 
-NxCloudflare berdiri sebagai proyek mandiri.
+nxcloud berdiri sebagai proyek mandiri.
 
 ## Instalasi (sama pola Teritip)
 
-NxCloudflare pakai JavaScript murni — **tidak ada dependency npm runtime**, jadi folder `node_modules/` biasanya **tidak muncul** (itu normal, bukan kurang install). Dependency opsional hanya jika nanti ditambah; CLI jalan tanpa `npm install`.
+nxcloud pakai JavaScript murni — **tidak ada dependency npm runtime**, jadi folder `node_modules/` biasanya **tidak muncul** (itu normal, bukan kurang install). Dependency opsional hanya jika nanti ditambah; CLI jalan tanpa `npm install`.
 
 Jalankan langsung:
 
 ```bash
-node bin/nxcloudflare.js <perintah> [argumen]
+node bin/nxcloud.js <perintah> [argumen]
 ```
 
-Atau daftarkan command `nxcloudflare` secara global lewat `npm link` (di dalam folder proyek):
+Atau daftarkan command `nxcloud` secara global lewat `npm link` (di dalam folder proyek):
 
 ```bash
-cd D:\Framework\CLI\NxCloudflare
+cd D:\Framework\CLI\nxcloud
 npm link
-nxcloudflare <perintah> [argumen]
+nxcloud <perintah> [argumen]
 ```
 
 Contoh:
 
 ```bash
-nxcloudflare start
-nxcloudflare status
-nxcloudflare config show
+nxcloud start
+nxcloud status
+nxcloud config show
 ```
 
 Cabut link global:
 
 ```bash
-npm unlink -g nxcloudflare
+npm unlink -g nxcloud
 ```
 
 ---
 
 ## 1. Tujuan
 
-Tujuan utama NxCloudflare:
+Tujuan utama nxcloud:
 
 * Menjalankan server Node.js di PC.
 * Menyediakan CLI untuk mengelola server.
@@ -64,7 +64,7 @@ Cloudflare
 PC
     │
     ▼
-NxCloudflare
+nxcloud
     │
     ▼
 Node.js Application
@@ -72,12 +72,12 @@ Node.js Application
 
 ---
 
-# 2. Konsep NxCloudflare
+# 2. Konsep nxcloud
 
-NxCloudflare terdiri dari dua bagian utama:
+nxcloud terdiri dari dua bagian utama:
 
 ```text
-NxCloudflare
+nxcloud
 │
 ├── Node.js Server
 │
@@ -107,7 +107,7 @@ https://app.example.com
 
 # 3. Prinsip Desain
 
-NxCloudflare harus:
+nxcloud harus:
 
 1. Sederhana.
 2. Ringan.
@@ -134,7 +134,7 @@ Teknologi awal:
 | Cloudflare Tunnel | Publikasi server         |
 | cloudflared       | Connector Tunnel         |
 | JSON              | Konfigurasi              |
-| CLI               | Pengelolaan NxCloudflare |
+| CLI               | Pengelolaan nxcloud |
 
 Target sistem:
 
@@ -156,10 +156,10 @@ Windows + Node.js
 Struktur awal:
 
 ```text
-NxCloudflare/
+nxcloud/
 │
 ├── bin/
-│   └── nxcloudflare.js
+│   └── nxcloud.js
 │
 ├── src/
 │   ├── index.js
@@ -185,7 +185,7 @@ NxCloudflare/
 │       └── paths.js
 │
 ├── config/
-│   └── nxcloudflare.json
+│   └── nxcloud.json
 │
 ├── logs/
 │
@@ -199,7 +199,7 @@ NxCloudflare/
 
 ## 6.1 Node.js Server
 
-Server lokal menjadi inti NxCloudflare.
+Server lokal menjadi inti nxcloud.
 
 Contoh:
 
@@ -240,7 +240,7 @@ Response:
 ```json
 {
   "status": "ok",
-  "service": "NxCloudflare"
+  "service": "nxcloud"
 }
 ```
 
@@ -274,7 +274,7 @@ Cloudflare Tunnel menjadi komponen untuk menghubungkan server lokal dengan jarin
 Konsep:
 
 ```text
-NxCloudflare
+nxcloud
      │
      ▼
 cloudflared
@@ -286,22 +286,22 @@ Cloudflare
 Internet
 ```
 
-NxCloudflare tidak menggantikan `cloudflared`.
+nxcloud tidak menggantikan `cloudflared`.
 
-NxCloudflare bertugas mengelola proses dan konfigurasi Tunnel.
+nxcloud bertugas mengelola proses dan konfigurasi Tunnel.
 
 ---
 
 # 9. Mode Tunnel
 
-NxCloudflare memiliki dua mode.
+nxcloud memiliki dua mode.
 
 ## Development
 
 Untuk pengujian cepat:
 
 ```text
-NxCloudflare
+nxcloud
       │
       ▼
 Quick Tunnel
@@ -333,7 +333,7 @@ Cloudflare
 Tunnel
      │
      ▼
-NxCloudflare
+nxcloud
 ```
 
 Contoh:
@@ -355,7 +355,7 @@ http://127.0.0.1:8787
 File:
 
 ```text
-config/nxcloudflare.json
+config/nxcloud.json
 ```
 
 Contoh:
@@ -383,13 +383,13 @@ Konfigurasi harus dapat diubah melalui CLI.
 Command utama:
 
 ```bash
-nxcloudflare
+nxcloud
 ```
 
 Menampilkan bantuan:
 
 ```bash
-nxcloudflare --help
+nxcloud --help
 ```
 
 ---
@@ -397,7 +397,7 @@ nxcloudflare --help
 ## Start
 
 ```bash
-nxcloudflare start
+nxcloud start
 ```
 
 Menjalankan:
@@ -413,17 +413,17 @@ Cloudflare Tunnel
 ## Stop
 
 ```bash
-nxcloudflare stop
+nxcloud stop
 ```
 
-Menghentikan service NxCloudflare.
+Menghentikan service nxcloud.
 
 ---
 
 ## Restart
 
 ```bash
-nxcloudflare restart
+nxcloud restart
 ```
 
 Menghentikan dan menjalankan kembali server.
@@ -433,13 +433,13 @@ Menghentikan dan menjalankan kembali server.
 ## Status
 
 ```bash
-nxcloudflare status
+nxcloud status
 ```
 
 Contoh:
 
 ```text
-NxCloudflare
+nxcloud
 ----------------------------
 Server      : RUNNING
 Host        : 127.0.0.1
@@ -457,7 +457,7 @@ Hostname    : server.example.com
 ## Tunnel
 
 ```bash
-nxcloudflare tunnel
+nxcloud tunnel
 ```
 
 Menampilkan informasi Tunnel.
@@ -467,7 +467,7 @@ Menampilkan informasi Tunnel.
 ## Config
 
 ```bash
-nxcloudflare config
+nxcloud config
 ```
 
 Menampilkan konfigurasi aktif.
@@ -477,7 +477,7 @@ Menampilkan konfigurasi aktif.
 ## Logs
 
 ```bash
-nxcloudflare logs
+nxcloud logs
 ```
 
 Menampilkan log server dan Tunnel.
@@ -489,7 +489,7 @@ Menampilkan log server dan Tunnel.
 Ketika menjalankan:
 
 ```bash
-nxcloudflare start
+nxcloud start
 ```
 
 proses:
@@ -520,7 +520,7 @@ proses:
 
 # 13. Dependency Check
 
-NxCloudflare memeriksa dependency saat `start` (bukan command terpisah).
+nxcloud memeriksa dependency saat `start` (bukan command terpisah).
 
 Yang dicek antara lain:
 
@@ -537,7 +537,7 @@ Tidak ada command `doctor` — diagnosa lewat `status`, `logs`, dan pesan error 
 
 # 14. Logging
 
-NxCloudflare menyediakan logging:
+nxcloud menyediakan logging:
 
 ```text
 logs/
@@ -558,7 +558,7 @@ DEBUG
 Contoh:
 
 ```text
-[INFO] NxCloudflare started
+[INFO] nxcloud started
 [INFO] Server listening on 127.0.0.1:8787
 [INFO] Cloudflare Tunnel starting
 [INFO] Tunnel connected
@@ -568,12 +568,12 @@ Contoh:
 
 # 15. Process Manager
 
-NxCloudflare harus mengetahui proses yang sedang berjalan.
+nxcloud harus mengetahui proses yang sedang berjalan.
 
 Contoh:
 
 ```text
-NxCloudflare
+nxcloud
 │
 ├── Node.js PID
 └── cloudflared PID
@@ -588,7 +588,7 @@ FAILED
 UNKNOWN
 ```
 
-Jika salah satu proses mati, NxCloudflare dapat mendeteksinya.
+Jika salah satu proses mati, nxcloud dapat mendeteksinya.
 
 ---
 
@@ -600,7 +600,7 @@ Ketika:
 Ctrl + C
 ```
 
-NxCloudflare harus:
+nxcloud harus:
 
 ```text
 1. Menghentikan penerimaan request baru
@@ -615,7 +615,7 @@ NxCloudflare harus:
 
 # 17. Keamanan
 
-Keamanan menjadi bagian penting dari NxCloudflare.
+Keamanan menjadi bagian penting dari nxcloud.
 
 Hal yang harus diperhatikan:
 
@@ -666,7 +666,7 @@ Cloudflare Tunnel menjadi jalur yang dikontrol untuk akses eksternal.
 
 # 19. Domain
 
-NxCloudflare mendukung hostname Cloudflare.
+nxcloud mendukung hostname Cloudflare.
 
 Contoh:
 
@@ -692,7 +692,7 @@ Local Service
 
 # 20. Multiple Service
 
-Pada tahap berikutnya NxCloudflare dapat mendukung beberapa service.
+Pada tahap berikutnya nxcloud dapat mendukung beberapa service.
 
 Contoh:
 
@@ -766,10 +766,10 @@ Configuration
 Fitur lanjutan:
 
 ```bash
-nxcloudflare install
+nxcloud install
 ```
 
-Memasang NxCloudflare sebagai Windows service atau mekanisme startup.
+Memasang nxcloud sebagai Windows service atau mekanisme startup.
 
 Kemudian:
 
@@ -777,7 +777,7 @@ Kemudian:
 Windows Boot
      │
      ▼
-NxCloudflare
+nxcloud
      │
      ├── Node.js Server
      └── Cloudflare Tunnel
@@ -787,7 +787,7 @@ NxCloudflare
 
 # 23. Health Monitoring
 
-NxCloudflare dapat melakukan pemeriksaan berkala:
+nxcloud dapat melakukan pemeriksaan berkala:
 
 ```text
 Server
@@ -813,7 +813,7 @@ Jika Tunnel terputus:
 Tunnel ✗
 ```
 
-NxCloudflare dapat melakukan reconnect.
+nxcloud dapat melakukan reconnect.
 
 ---
 
@@ -825,7 +825,7 @@ Target:
 Tunnel mati
     │
     ▼
-NxCloudflare mendeteksi
+nxcloud mendeteksi
     │
     ▼
 Restart Tunnel
@@ -840,7 +840,7 @@ Jika Node.js mati:
 Node.js mati
     │
     ▼
-NxCloudflare mendeteksi
+nxcloud mendeteksi
     │
     ▼
 Restart Server
@@ -856,12 +856,12 @@ Contoh `package.json`:
 
 ```json
 {
-  "name": "nxcloudflare",
+  "name": "nxcloud",
   "version": "0.1.0",
   "description": "Local Node.js server manager with Cloudflare Tunnel",
   "type": "module",
   "bin": {
-    "nxcloudflare": "./bin/nxcloudflare.js"
+    "nxcloud": "./bin/nxcloud.js"
   },
   "scripts": {
     "start": "node src/index.js",
@@ -959,7 +959,7 @@ Configuration
 # 27. Roadmap
 
 ```text
-                    NxCloudflare
+                    nxcloud
                          │
           ┌──────────────┴──────────────┐
           ▼                             ▼
@@ -1007,12 +1007,12 @@ Roadmap keseluruhan:
 
 # 28. Target Akhir
 
-Target akhir NxCloudflare adalah memberikan cara sederhana untuk membuat server Node.js lokal menjadi layanan yang dapat diakses melalui Internet.
+Target akhir nxcloud adalah memberikan cara sederhana untuk membuat server Node.js lokal menjadi layanan yang dapat diakses melalui Internet.
 
 Perintah utama:
 
 ```bash
-nxcloudflare start
+nxcloud start
 ```
 
 Hasil:
@@ -1021,7 +1021,7 @@ Hasil:
 Local Server
      │
      ▼
-NxCloudflare
+nxcloud
      │
      ▼
 Cloudflare Tunnel
@@ -1046,9 +1046,9 @@ https://server.example.com
 
 # 29. Prinsip Penting
 
-NxCloudflare **bukan hosting VPS**.
+nxcloud **bukan hosting VPS**.
 
-NxCloudflare menjalankan service di komputer lokal.
+nxcloud menjalankan service di komputer lokal.
 
 Cloudflare menyediakan jaringan/Tunnel di depannya.
 
@@ -1057,7 +1057,7 @@ PC sendiri
     +
 Node.js
     +
-NxCloudflare
+nxcloud
     +
 Cloudflare Tunnel
 ```
@@ -1069,7 +1069,7 @@ sehingga PC dapat berfungsi sebagai **origin server** yang dapat diakses melalui
 # 30. Status Proyek
 
 ```text
-Project      : NxCloudflare
+Project      : nxcloud
 Type         : Node.js CLI / Server
 Status       : Planning
 Target       : Local Server + Cloudflare Tunnel
@@ -1126,7 +1126,7 @@ Penyebab:
   spawn ganda bila login masih berjalan dan mengembalikan state yang sama.
 * Polling `cert.pem` tiap 1 detik selama login berjalan, agar status "terhubung" terdeteksi
   walau proses cloudflared belum keluar.
-* UI (`Desktop/templates/nxcloudflare/domain.js`) memilih banner berdasarkan state:
+* UI (`Desktop/templates/nxcloud/domain.js`) memilih banner berdasarkan state:
   `pending` → tautan URL + polling otomatis tiap 3 detik; `error` → pesan cloudflared
   ditampilkan apa adanya (termasuk path tujuan manual copy); selain itu → banner lama.
 
@@ -1134,7 +1134,7 @@ Penyebab:
 
 * `src/cloudflare/auth.js` — tangkap output login, state, tolak spawn ganda, poll cert.pem.
 * `src/api/router.js` — `/api/auth/status` menyertakan `login`; import `getLoginState`.
-* `Desktop/templates/nxcloudflare/domain.js` — banner pending/error, auto-poll, escaping.
+* `Desktop/templates/nxcloud/domain.js` — banner pending/error, auto-poll, escaping.
 
 ---
 
@@ -1180,7 +1180,7 @@ resource` (bug upstream terbuka: cloudflare/cloudflared#1252). Dampaknya dua:
 * `src/index.js` — tidak lagi skip tunnel saat cert hilang.
 * `src/api/router.js` — `tokenSet`/`ready` di auth status, `apiTokenSet`
   di config publik.
-* `Desktop/templates/nxcloudflare/domain.js` — banner 3 state + `ready`.
+* `Desktop/templates/nxcloud/domain.js` — banner 3 state + `ready`.
 
 ### Diverifikasi (2026-10-07, end-to-end nyata)
 

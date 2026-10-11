@@ -270,7 +270,7 @@ export function syncCloudflaredIngress(routes) {
     written: true,
     path: configPath,
     hostnames: enabledRoutes.map((r) => r.hostname),
-    note: 'Restart nxcloudflare (tunnel) to apply ingress changes. Add DNS CNAME per hostname if missing.'
+    note: 'Restart nxcloud (tunnel) to apply ingress changes. Add DNS CNAME per hostname if missing.'
   };
 }
 

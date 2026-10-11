@@ -11,7 +11,7 @@ export function resolveProjectPath(filePath) {
 }
 
 /**
- * Build cloudflared arguments from NxCloudflare config.
+ * Build cloudflared arguments from nxcloud config.
  */
 export function buildTunnelArgs(config) {
   const cf = config.cloudflare || {};

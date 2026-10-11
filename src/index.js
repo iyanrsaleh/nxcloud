@@ -12,14 +12,14 @@ import { platformLabel } from './utils/platform.js';
 let httpServer = null;
 let shuttingDown = false;
 
-export async function startNxCloudflare(options = {}) {
+export async function startnxcloud(options = {}) {
   const config = loadConfig();
   setLogLevel(config.logging.level);
 
   ensureDir(RUNTIME_DIR);
   writePid(MASTER_PID_FILE, process.pid);
 
-  logger.info('NxCloudflare starting');
+  logger.info('nxcloud starting');
   logger.info(`Platform: ${platformLabel()}`);
   logger.info(`Host: ${config.server.host}:${config.server.port}`);
 
@@ -51,7 +51,7 @@ export async function startNxCloudflare(options = {}) {
   });
 
   let tunnelResult = null;
-  const envNoTunnel = process.env.NXCLOUDFLARE_NO_TUNNEL === '1';
+  const envNoTunnel = process.env.nxcloud_NO_TUNNEL === '1';
   const enableTunnel =
     options.tunnel !== false &&
     !envNoTunnel &&
@@ -66,7 +66,7 @@ export async function startNxCloudflare(options = {}) {
     logger.warn(
       'Cloudflare not connected (no ~/.cloudflared/cert.pem and no cloudflare.apiToken). ' +
       'Starting tunnel from local credentials anyway; creating NEW hostnames needs an API token: ' +
-      'nxcloudflare config set cloudflare.apiToken <token>'
+      'nxcloud config set cloudflare.apiToken <token>'
     );
   }
 
@@ -115,7 +115,7 @@ function buildStatus(config) {
 function printBanner(config, tunnelResult) {
   const lines = [
     '',
-    'NxCloudflare',
+    'nxcloud',
     '----------------------------',
     `Server      : RUNNING`,
     `Local       : http://${config.server.host}:${config.server.port}`,
@@ -171,14 +171,14 @@ export async function shutdown(code = 0) {
     cloudflare: { status: 'stopped', pid: null }
   });
 
-  logger.info('NxCloudflare stopped');
+  logger.info('nxcloud stopped');
   process.exit(code);
 }
 
 // Direct run: npm start / node src/index.js
 const isDirect = process.argv[1] && process.argv[1].replace(/\\/g, '/').endsWith('/src/index.js');
 if (isDirect) {
-  startNxCloudflare().catch((err) => {
+  startnxcloud().catch((err) => {
     console.error(err.message || err);
     process.exit(1);
   });

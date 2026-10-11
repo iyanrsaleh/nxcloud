@@ -1,10 +1,10 @@
-/** NxCloudflare API client. Synced copy lives at Desktop/lib/nxcloudflareApi.js — update here, then copy over. */
+/** nxcloud API client. Synced copy lives at Desktop/lib/nxcloudApi.js — update here, then copy over. */
 
 function resolveBase(explicit) {
   if (explicit) return String(explicit).replace(/\/$/, '');
   const fromNexa =
-    globalThis.NEXA && globalThis.NEXA.nxcloudflareApi
-      ? globalThis.NEXA.nxcloudflareApi
+    globalThis.NEXA && globalThis.NEXA.nxcloudApi
+      ? globalThis.NEXA.nxcloudApi
       : null;
   return String(fromNexa || 'http://127.0.0.1:8787').replace(/\/$/, '');
 }
@@ -34,7 +34,7 @@ async function request(base, path, options = {}) {
   return data;
 }
 
-export function createNxCloudflareApi(baseUrl, opts = {}) {
+export function createnxcloudApi(baseUrl, opts = {}) {
   const base = resolveBase(baseUrl);
   const controlToken = opts.controlToken || null;
   const withToken = (init = {}) => ({
@@ -87,5 +87,5 @@ export function createNxCloudflareApi(baseUrl, opts = {}) {
   };
 }
 
-export const nx = createNxCloudflareApi();
+export const nx = createnxcloudApi();
 export default nx;

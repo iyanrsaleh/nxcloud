@@ -36,16 +36,16 @@ Setelah domain **Active**:
 1. Di Cloudflare: **Zero Trust** → **Networks** → **Tunnels**  
    (atau cari “Tunnels” di dashboard).
 2. **Create a tunnel** → tipe **Cloudflared**.
-3. Nama tunnel: `nxcloudflare` → Save.
+3. Nama tunnel: `nxcloud` → Save.
 4. Pilih OS **Windows** → unduh/install connector **atau** pakai binary yang sudah ada di proyek (`.tools/cloudflared.exe`).
-5. Cloudflare akan menampilkan perintah / token. Cara yang lebih rapi untuk NxCloudflare:
+5. Cloudflare akan menampilkan perintah / token. Cara yang lebih rapi untuk nxcloud:
 
 ### Opsi yang disarankan (credentials file)
 
 Di PowerShell, dari folder proyek:
 
 ```powershell
-cd D:\Framework\CLI\NxCloudflare
+cd D:\Framework\CLI\nxcloud
 .\.tools\cloudflared.exe tunnel login
 ```
 
@@ -54,7 +54,7 @@ Browser terbuka → pilih zona `motali.online` → Authorize.
 Lanjut:
 
 ```powershell
-.\.tools\cloudflared.exe tunnel create nxcloudflare
+.\.tools\cloudflared.exe tunnel create nxcloud
 ```
 
 Ini membuat file credentials JSON (biasanya di `%USERPROFILE%\.cloudflared\<TUNNEL-ID>.json`).
@@ -62,7 +62,7 @@ Ini membuat file credentials JSON (biasanya di `%USERPROFILE%\.cloudflared\<TUNN
 Salin file itu ke:
 
 ```text
-D:\Framework\CLI\NxCloudflare\.credentials\<TUNNEL-ID>.json
+D:\Framework\CLI\nxcloud\.credentials\<TUNNEL-ID>.json
 ```
 
 Catat **Tunnel ID** (nama file tanpa `.json`).
@@ -90,15 +90,15 @@ Hostname sudah diset: `nx.motali.online` → `http://127.0.0.1:8787`.
 
 ---
 
-## Langkah 5 — NxCloudflare mode named
+## Langkah 5 — nxcloud mode named
 
 Setelah file `.credentials/` siap, jalankan (atau minta agent menyesuaikan config):
 
 ```powershell
-node bin/nxcloudflare.js config set cloudflare.mode named
-node bin/nxcloudflare.js config set cloudflare.hostname nx.motali.online
-node bin/nxcloudflare.js config set cloudflare.tunnelName nxcloudflare
-node bin/nxcloudflare.js start
+node bin/nxcloud.js config set cloudflare.mode named
+node bin/nxcloud.js config set cloudflare.hostname nx.motali.online
+node bin/nxcloud.js config set cloudflare.tunnelName nxcloud
+node bin/nxcloud.js start
 ```
 
 Uji di browser:
@@ -107,7 +107,7 @@ Uji di browser:
 https://nx.motali.online/health
 ```
 
-Harus muncul: `{"status":"ok","service":"NxCloudflare"}`.
+Harus muncul: `{"status":"ok","service":"nxcloud"}`.
 
 ---
 

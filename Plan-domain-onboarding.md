@@ -10,7 +10,7 @@ Pembelokan, ditemukan gap yang jauh lebih mendasar — GUI belum punya alur
 sama sekali untuk 4 pertanyaan dasar yang user ajukan:
 
 1. User sudah punya domain di Cloudflare — apakah ada halaman untuk
-   menghubungkan/mendaftarkannya ke NxCloudflare?
+   menghubungkan/mendaftarkannya ke nxcloud?
 2. Bagaimana menambahkan **domain baru** (root, bukan subdomain)?
 3. Bagaimana membuat **subdomain baru**, dan diarahkan ke mana (web statis
    folder mana? API port berapa? app eksternal?)
@@ -25,14 +25,14 @@ sama sekali untuk 4 pertanyaan dasar yang user ajukan:
 
 `getPublicConfig()` di `src/api/router.js` **tidak pernah** menyertakan
 blok `config.web` — jadi `GET /api/config` tidak pernah mengembalikan info
-web statis sama sekali. Halaman Settings (`Desktop/templates/nxcloudflare/settings.js`)
+web statis sama sekali. Halaman Settings (`Desktop/templates/nxcloud/settings.js`)
 yang dibuat sebelumnya menampilkan field ini tapi selalu kosong karena
 datanya tidak pernah dikirim backend. **Sudah diperbaiki**: `web: { ...config.web }`
 ditambahkan ke response.
 
 ### 1.2 Web statis (`web.tirtamoolango.id`) TIDAK tercatat di sistem Pembelokan
 
-`GET /api/routes` (backend `routes.json`) hanya berisi 2 baris: `nxcloudflare`
+`GET /api/routes` (backend `routes.json`) hanya berisi 2 baris: `nxcloud`
 (API, `nx.`) dan `socket` (eksternal). **`web.tirtamoolango.id` tidak ada
 sama sekali** di sini — diatur sepenuhnya lewat `config.web.*` +
 ingress `.credentials/config.yml` yang ditambah **manual** saat sesi
@@ -95,7 +95,7 @@ lakukan manual untuk `web.tirtamoolango.id` sebelumnya).
     ┌─────────┼─────────────┬─────────────────┐
     ▼         ▼             ▼                 ▼
   Web       API           Route            (nanti: Proses,
-  statis    NxCloudflare  eksternal         P3 MENU-FITUR.md)
+  statis    nxcloud  eksternal         P3 MENU-FITUR.md)
   baru      (sudah ada,   (app lain,
   (folder   1 saja)       port lain)
   baru di
@@ -120,10 +120,10 @@ lakukan manual untuk `web.tirtamoolango.id` sebelumnya).
    sekarang.
 4. **Kelola terpisah** — Saat membuat subdomain baru, user memilih target:
    - **Web statis** → tunjuk folder (default `web/`, atau subfolder baru)
-     → NxCloudflare **menjalankan static server baru** di port bebas
+     → nxcloud **menjalankan static server baru** di port bebas
      berikutnya (pola `staticServer.js` yang sudah ada, saat ini cuma satu
      instance hardcoded port `8789` — perlu digeneralisasi jadi multi-instance).
-   - **API NxCloudflare** → sudah ada, cuma satu (`8787`) — tidak butuh
+   - **API nxcloud** → sudah ada, cuma satu (`8787`) — tidak butuh
      "buat baru", cukup tunjuk yang sudah jalan.
    - **Route eksternal** → seperti sekarang (`routes.js` form yang sudah
      ada), isi origin manual.
@@ -154,7 +154,7 @@ lakukan manual untuk `web.tirtamoolango.id` sebelumnya).
    subdomain** — tiap subdomain web dapat port sendiri + folder sendiri.
    Perlu refactor `staticServer.js` jadi multi-instance (lihat §5.2).
 3. **Menu sidebar**: ✅ **Dipisah jadi 2 menu** — menu baru **"Domain"**
-   khusus subdomain/web/API milik NxCloudflare sendiri (yang dikelola
+   khusus subdomain/web/API milik nxcloud sendiri (yang dikelola
    otomatis), menu **"Pembelokan"** tetap murni untuk route eksternal
    (app lain, origin manual, seperti sekarang).
 
@@ -199,7 +199,7 @@ berbeda per instance.
 
 ### 5.3 Endpoint API baru — "Domain" (terpisah dari `/api/routes`)
 
-- `GET /api/domains` — gabungan tampilan: API NxCloudflare (1, tetap),
+- `GET /api/domains` — gabungan tampilan: API nxcloud (1, tetap),
   semua Web Instance (`web-instances.json`), + status DNS masing-masing
   (reachable via `nslookup`/`dns.resolve` dari Node, opsional — lihat §5.5).
 - `POST /api/domains/web` — buat web instance baru: `{name, hostname, folder}`
@@ -235,15 +235,15 @@ dari Node, dipanggil manual (tombol "Cek DNS") — bukan polling otomatis.
 
 ### 5.6 Desktop UI — menu baru "Domain"
 
-`Desktop/templates/nxcloudflare/domain.js` (baru), didaftarkan di
+`Desktop/templates/nxcloud/domain.js` (baru), didaftarkan di
 `index.js` sidebar. Isi:
-- Kartu **API NxCloudflare** (read-only: hostname `nx.`, port 8787, status).
+- Kartu **API nxcloud** (read-only: hostname `nx.`, port 8787, status).
 - Tabel **Web Instances** — daftar + tombol **Tambah Web Baru** (form:
   nama, hostname, folder) yang menjalankan alur §5.3 dalam satu aksi.
 - Tiap baris: status DNS (kalau dicek), tombol Hapus, link buka di browser.
 
 `routes.js` (Pembelokan) **tidak berubah scope** — tetap murni untuk
-route eksternal, tidak lagi menampilkan `nxcloudflare`/web sebagai baris
+route eksternal, tidak lagi menampilkan `nxcloud`/web sebagai baris
 campur aduk (baris `kind: internal` untuk API bisa tetap ada di
 `routes.json` sebagai warisan/referensi read-only, atau dipindah — perlu
 dicek saat eksekusi, jangan hapus data tanpa migrasi jelas).
@@ -320,7 +320,7 @@ untuk log. Diverifikasi: tidak ada regresi ke `web.tirtamoolango.id`.
 
 Endpoint baru di `src/api/router.js` (semua loopback-only, pola sama
 seperti `/api/routes`):
-- `GET /api/domains` — ringkasan gabungan: `api` (NxCloudflare sendiri,
+- `GET /api/domains` — ringkasan gabungan: `api` (nxcloud sendiri,
   read-only), `web` (semua web instance), `rootDomain` (dari `dns.js`).
 - `GET /api/domains/web`, `GET /api/domains/web/:id` — baca.
 - `POST /api/domains/web` — **satu aksi gabungan**: `createWebInstance()`
@@ -368,7 +368,7 @@ dari `web-instances.json`, bukan hardcode `config.web` lagi). Endpoint
 lokal (`8787`, `8789`) dan publik (`nx.`, `web.`) semua tetap `200` —
 tidak ada regresi dari refactor.
 
-**Implikasi:** `config.web.*` di `config/nxcloudflare.json` sekarang
+**Implikasi:** `config.web.*` di `config/nxcloud.json` sekarang
 **deprecated/tidak dipakai lagi** oleh `index.js` (cuma dipakai sekali
 saat seeding migrasi pertama kali `web-instances.json` dibuat, di
 `src/web/instances.js`). Belum dihapus dari `DEFAULTS`/`CONFIG_KEYS` di
@@ -377,15 +377,15 @@ untuk kompatibilitas mundur.
 
 ### §5.6 — ✅ SUDAH DIEKSEKUSI (2026-09-11)
 
-- `client/nxcloudflareApi.js`: tambah `getDomains`, `listWebInstances`,
+- `client/nxcloudApi.js`: tambah `getDomains`, `listWebInstances`,
   `getWebInstance`, `createWebInstance`, `updateWebInstance`,
-  `deleteWebInstance`. Disinkron ke `Desktop/lib/nxcloudflareApi.js`.
+  `deleteWebInstance`. Disinkron ke `Desktop/lib/nxcloudApi.js`.
   Header komentar sumber utama juga diperbaiki (masih menyebut "Mirror of
   Teritip" — sisa dari sebelum perubahan arah di `Plan-dashboard-api.md`).
-- `Desktop/templates/nxcloudflare/domain.js` — baru. Kartu **API**
+- `Desktop/templates/nxcloud/domain.js` — baru. Kartu **API**
   (read-only, satu instance tetap), tabel **Subdomain Web** + form buat
   baru (nama, hostname, folder opsional), tombol hapus per baris.
-- `Desktop/templates/nxcloudflare/index.js` — menu **Domain** ditambah ke
+- `Desktop/templates/nxcloud/index.js` — menu **Domain** ditambah ke
   sidebar (antara Ringkasan dan Pembelokan).
 
 **Keputusan desain penting** (langsung merespons insiden §5.4/§6c):
@@ -394,11 +394,11 @@ untuk kompatibilitas mundur.
   DNS **tidak bisa dibatalkan otomatis** dan harus dibersihkan manual di
   dashboard Cloudflare bila salah — bukan tombol yang langsung jalan
   tanpa peringatan.
-- Pesan hasil sukses selalu mengingatkan **"Restart NxCloudflare agar
+- Pesan hasil sukses selalu mengingatkan **"Restart nxcloud agar
   server-nya aktif"** — jujur soal keterbatasan saat ini (§5.3b: instance
   baru butuh restart proses, belum ada hot-reload/spawn-on-demand).
 - Menu **Domain** dan **Pembelokan** ditegaskan terpisah lewat teks lead:
-  Domain untuk yang dikelola NxCloudflare sendiri (API+Web), Pembelokan
+  Domain untuk yang dikelola nxcloud sendiri (API+Web), Pembelokan
   untuk app eksternal — sesuai keputusan §4 poin 3.
 
 **Diverifikasi:**
@@ -413,19 +413,19 @@ untuk kompatibilitas mundur.
 
 Muncul dari pertanyaan user: form "Buat Subdomain Web" di menu Domain
 sebelumnya mengasumsikan folder yang dituju **selalu di dalam
-`ROOT_DIR`** (`D:\Framework\CLI\NxCloudflare\`). User menunjukkan ini
+`ROOT_DIR`** (`D:\Framework\CLI\nxcloud\`). User menunjukkan ini
 janggal — sistem ini adalah gateway, proyek yang mau dipublikasikan tidak
-harus dibuat di dalam NxCloudflare sendiri.
+harus dibuat di dalam nxcloud sendiri.
 
 **Ditelusuri sampai ketemu batas yang jelas:**
 
 1. Backend `createWebInstance()` (§5.1) selalu memanggil
-   `createStaticServer()` — **NxCloudflare sendiri yang `listen()`** di
+   `createStaticServer()` — **nxcloud sendiri yang `listen()`** di
    port itu untuk serve file dari folder tsb. Ini cuma masuk akal untuk
    **konten statis polos** (HTML/CSS/JS siap pakai, hasil build) yang
    belum punya server sendiri sama sekali.
 2. Kalau app sudah punya **server sendiri** yang sudah `listen()` di
-   port tertentu (dev server, backend framework apa pun) — NxCloudflare
+   port tertentu (dev server, backend framework apa pun) — nxcloud
    **tidak bisa** ikut `listen()` di port yang sama (`EADDRINUSE`).
    Kasus ini **bukan** domain menu Domain — itu domain **Routes**
    (`origin: http://host:port` yang sudah ada, sudah lengkap sejak
@@ -437,15 +437,15 @@ melengkapi, bukan tumpang tindih:**
 
 | Menu | Untuk apa | Siapa yang `listen()` |
 | ---- | --------- | ---------------------- |
-| **Domain** (Subdomain Web) | Konten statis baru dari nol | NxCloudflare sendiri (`createStaticServer`) |
-| **Routes** | App yang SUDAH punya server sendiri | App itu sendiri; NxCloudflare cuma proxy/ingress |
+| **Domain** (Subdomain Web) | Konten statis baru dari nol | nxcloud sendiri (`createStaticServer`) |
+| **Routes** | App yang SUDAH punya server sendiri | App itu sendiri; nxcloud cuma proxy/ingress |
 
 **Perubahan yang dieksekusi:**
 - `src/web/instances.js`: `resolveInstanceDir()` + `normalizeInstance()`
   diperluas mendukung `folder` berupa path **absolut** (di luar
   `ROOT_DIR`), bukan cuma path relatif — untuk kasus konten statis yang
   **sudah ada filenya** di folder proyek lain (mis. `dist/` hasil build)
-  dan memang mau NxCloudflare yang serve langsung, tanpa disalin.
+  dan memang mau nxcloud yang serve langsung, tanpa disalin.
   Backward-compatible penuh — path relatif tetap join ke `ROOT_DIR`
   seperti sebelumnya. Diverifikasi via test script sekali pakai
   (dijalankan dari dalam folder proyek untuk menghindari masalah ESM
@@ -485,13 +485,13 @@ hal: **sudah ada yang jalan di suatu port atau belum**.
 Nama, Hostname, Port (opsional)
    │
    ├─ Port diisi   → createRoute({origin: http://127.0.0.1:<port>, autoDns:true})
-   └─ Port kosong  → createWebInstance({name, hostname})  (NxCloudflare buatkan halaman baru)
+   └─ Port kosong  → createWebInstance({name, hostname})  (nxcloud buatkan halaman baru)
 ```
 Tabel di bawah form juga digabung — menampilkan Routes DAN Web Instances
 sebagai satu daftar (kolom "Tujuan" menunjukkan origin atau
 "halaman statis (port N)"), dengan Hapus yang otomatis memanggil
 `deleteRoute`/`deleteWebInstance` sesuai jenis barisnya. Kartu "API
-NxCloudflare" (bawaan, tidak bisa dihapus) tetap tampil terpisah di atas
+nxcloud" (bawaan, tidak bisa dihapus) tetap tampil terpisah di atas
 sebagai info, bukan bagian dari tabel yang bisa diedit.
 
 **Gap ditemukan & ditutup sekalian**: `POST /api/routes` (dipakai jalur
@@ -555,7 +555,7 @@ konsisten** — bukan cuma soal desain form:
 | **Proses** | Tidak berubah — tetap baca `projectPath`+`command` dari Routes, konsisten karena field itu memang cuma diisi di satu tempat sekarang. |
 
 **Perubahan yang dieksekusi:**
-- `Desktop/templates/nxcloudflare/domain.js` — **ditulis ulang total**.
+- `Desktop/templates/nxcloud/domain.js` — **ditulis ulang total**.
   Form "Port opsional → createRoute" dari §8b **dihapus sepenuhnya**
   (bukan cuma disembunyikan — form createRoute yang lebih sederhana ini
   akan selalu kalah lengkap dari form Routes, jadi lebih baik tidak ada
@@ -585,7 +585,7 @@ terjadi setiap kali proses `cloudflared` baru selesai reconnect.
 
 Setelah §8c masih dinilai keliru — bukan cuma soal pembagian halaman,
 tapi **istilah yang berubah-ubah** di dalam satu halaman saja ("Semua
-Hostname", "NxCloudflare API", "Halaman Statis Baru" — tiga label
+Hostname", "nxcloud API", "Halaman Statis Baru" — tiga label
 berbeda untuk konsep yang saling tumpang tindih, bahkan sebelum
 dibandingkan lintas halaman). Dihentikan dulu, disusun ulang dari
 definisi entitas data (bukan istilah UI), baru diberi nama SEKALI dan
@@ -595,15 +595,15 @@ dipakai konsisten selamanya.
 
 | # | Sumber | Ciri |
 | - | ------ | ---- |
-| 1 | `GET /api/routes` → 1 baris tetap (`id: "nxcloudflare"`) | Bawaan, TIDAK bisa dihapus/diedit |
+| 1 | `GET /api/routes` → 1 baris tetap (`id: "nxcloud"`) | Bawaan, TIDAK bisa dihapus/diedit |
 | 2 | `GET /api/routes` → baris lain | App eksternal, origin bebas |
-| 3 | `GET /api/domains/web` (`web-instances.json`) | Statis, NxCloudflare sendiri yang serve |
+| 3 | `GET /api/domains/web` (`web-instances.json`) | Statis, nxcloud sendiri yang serve |
 
 ### Istilah baku (dikonfirmasi eksplisit, dipakai final)
 
 | Entitas | Istilah |
 | ------- | ------- |
-| #1 | **NxCloudflare API** (bawaan) |
+| #1 | **nxcloud API** (bawaan) |
 | #2 | **Route** |
 | #3 | **Halaman Statis** |
 
@@ -615,7 +615,7 @@ Domain (TAMBAH BARU SAJA, tanpa tabel)
    │  Port kosong  → createWebInstance()  (jadi Halaman Statis)
    ▼
 Routes (SATU-SATUNYA tempat LIHAT + KELOLA semua yang sudah ada)
-   │  1 tabel gabungan: NxCloudflare API (baris info, tanpa aksi)
+   │  1 tabel gabungan: nxcloud API (baris info, tanpa aksi)
    │                  + Route (Edit/Uji/Hapus)
    │                  + Halaman Statis (Hapus saja)
    ▼
@@ -628,7 +628,7 @@ halaman ini lagi (§8c masih punya tabel ringkas, itu salah satu sumber
 tumpang-tindih — dihapus). Pesan sukses submit berisi link "kelola di
 Routes →".
 
-**`routes.js` ditulis ulang total** — kartu "NxCloudflare API" terpisah
+**`routes.js` ditulis ulang total** — kartu "nxcloud API" terpisah
 (dari §8c) **dihapus**, digabung jadi baris tabel biasa dengan kolom
 Jenis = "Bawaan", tanpa tombol aksi apapun. Form yang ada sekarang MURNI
 mode edit (disembunyikan sampai tombol Edit sebuah Route diklik, judul
@@ -664,7 +664,7 @@ keduanya dibersihkan tuntas — data lokal maupun DNS record).
 ### Batasan yang tetap berlaku (tidak berubah, lihat §6 dokumen ini)
 - Domain **root** baru tetap tidak bisa didaftarkan dari GUI ini.
 - `cloudflared tunnel login` tetap prasyarat manual sekali per mesin.
-- Instance web baru butuh **restart NxCloudflare** untuk server-nya aktif
+- Instance web baru butuh **restart nxcloud** untuk server-nya aktif
   (tidak ada hot-reload proses berjalan).
 - DNS yang terlanjur dibuat **tidak bisa dihapus dari GUI/CLI** — selalu
   perlu dashboard Cloudflare manual (dikomunikasikan jujur di UI).
@@ -684,7 +684,7 @@ oleh user di dashboard Cloudflare — **belum dikonfirmasi bersih di
 sesi ini**.
 
 **Ini mengubah desain §5.4 wajib:**
-- Backend **harus** memvalidasi hostname ketat di sisi NxCloudflare
+- Backend **harus** memvalidasi hostname ketat di sisi nxcloud
   SEBELUM memanggil `cloudflared tunnel route dns` — minimal: hostname
   harus diakhiri dengan salah satu domain yang **sudah dikenal** (mis.
   hostname existing di `routes.json`/`web-instances.json`, atau domain
@@ -744,9 +744,9 @@ diputuskan dihapus total), berikut **kondisi final yang dikonfirmasi
 sesuai oleh user**:
 
 **Istilah baku** (dipakai konsisten di semua halaman):
-- **NxCloudflare API** — baris bawaan (`id: "nxcloudflare"`), tanpa aksi.
+- **nxcloud API** — baris bawaan (`id: "nxcloud"`), tanpa aksi.
 - **Route** — app eksternal dengan server sendiri, origin bebas.
-- **Halaman Statis** — file statis yang NxCloudflare sendiri jalankan.
+- **Halaman Statis** — file statis yang nxcloud sendiri jalankan.
 
 **Domain** (`domain.js`) — SATU-SATUNYA tempat ADA FORM:
 - Form: Nama, Hostname, Port (opsional). TIDAK ADA field lain (Origin
@@ -757,7 +757,7 @@ sesuai oleh user**:
 
 **Routes** (`routes.js`) — MURNI tabel baca-saja, TIDAK ADA form sama
 sekali (termasuk tidak ada Edit):
-- Satu tabel gabungan: NxCloudflare API (info saja) + Route (Uji, Hapus)
+- Satu tabel gabungan: nxcloud API (info saja) + Route (Uji, Hapus)
   + Halaman Statis (Hapus saja).
 - Untuk "mengubah" data Route yang sudah ada (Origin, Description, Path
   Proyek, Command): **hapus lalu buat ulang dari Domain** — bukan
@@ -769,7 +769,7 @@ iterasi ini.
 
 **Yang TIDAK dihapus dari backend** (tetap valid dipanggil via API
 langsung, hanya tidak ada tombol UI untuk itu lagi): `updateRoute()` di
-`client/nxcloudflareApi.js` dan endpoint `PATCH /api/routes/:id`.
+`client/nxcloudApi.js` dan endpoint `PATCH /api/routes/:id`.
 
 **Pelajaran untuk sesi berikutnya**: kalau diminta ubah alur/istilah
 UI lagi di area ini, mulai dari menyusun rancangan sebagai TEKS dulu
@@ -807,12 +807,12 @@ nilai semula setelah tes).
 **Keputusan arsitektur final dari user**, dikonfirmasi eksplisit dengan
 "Ya, ini benar" untuk pernyataan:
 
-> NxCloudflare = murni pengelola pemetaan hostname→origin. Tidak
-> pernah ada "proyek yang dibangun di dalam NxCloudflare" untuk
+> nxcloud = murni pengelola pemetaan hostname→origin. Tidak
+> pernah ada "proyek yang dibangun di dalam nxcloud" untuk
 > di-publish (folder `web/`, static server internal dihapus). Origin
 > SELALU proses eksternal yang sudah ada duluan.
 
-Konsep "Halaman Statis" (NxCloudflare menjalankan static file server
+Konsep "Halaman Statis" (nxcloud menjalankan static file server
 sendiri untuk melayani HTML) dinilai KELIRU secara fundamental — sistem
 ini hanya boleh menjadi penyedia manajemen rute (hostname → origin
 eksternal), bukan tempat proyek/asset dibangun.
@@ -828,19 +828,19 @@ eksternal), bukan tempat proyek/asset dibangun.
 - Endpoint `GET/POST/PATCH/DELETE /api/domains/web*` di `router.js`
 - Method client API: `listWebInstances`, `getWebInstance`,
   `createWebInstance`, `updateWebInstance`, `deleteWebInstance` (di
-  `client/nxcloudflareApi.js`, disinkronkan ke `Desktop/lib/`)
+  `client/nxcloudApi.js`, disinkronkan ke `Desktop/lib/`)
 - Field `web.*` di `config.js` (`DEFAULTS`, `CONFIG_KEYS`, validasi)
   dan `WEB_INSTANCES_FILE`/`WEB_DIR` di `utils/paths.js`
-- `Desktop/templates/nxcloudflare/domain.js`: cabang "Port kosong →
+- `Desktop/templates/nxcloud/domain.js`: cabang "Port kosong →
   buat Halaman Statis" dihapus, Port jadi field wajib, form selalu
   panggil `createRoute()`
-- `Desktop/templates/nxcloudflare/routes.js`: kolom "Jenis", baris
+- `Desktop/templates/nxcloud/routes.js`: kolom "Jenis", baris
   `kind: 'web'`, tombol Hapus untuk Web dihapus — tabel sekarang
   murni daftar Route eksternal
 
 **Tambahan koreksi arah yang sama** (ditemukan dari screenshot user
-setelah cleanup di atas): baris "NxCloudflare" (API bawaan, id
-`nxcloudflare`, hostname `nx.tirtamoolango.id` → `127.0.0.1:8787`)
+setelah cleanup di atas): baris "nxcloud" (API bawaan, id
+`nxcloud`, hostname `nx.tirtamoolango.id` → `127.0.0.1:8787`)
 JUGA salah karena disimpan sebagai *route record* di `routes.json`
 yang bisa diedit/dihapus lewat CRUD yang sama dengan route eksternal —
 ini mengulang pola yang sama (sistem mengelola dirinya sendiri sebagai
@@ -848,7 +848,7 @@ data terkelola). User memilih: **hapus baris ini dari UI Routes sama
 sekali** — halaman itu murni untuk route eksternal.
 
 **Perubahan `src/api/routes.js`:**
-- `ensureStore()` tidak lagi seed route `id: 'nxcloudflare'` — dimulai
+- `ensureStore()` tidak lagi seed route `id: 'nxcloud'` — dimulai
   dari `{routes: []}` kosong (lalu diisi user via Domain)
 - Fungsi baru `builtinApiIngress()` — menghitung hostname+origin API
   sendiri langsung dari `config.cloudflare`, TIDAK disimpan sebagai
@@ -858,7 +858,7 @@ sekali** — halaman itu murni untuk route eksternal.
   sendiri — tanpa API itu jadi entry yang bisa diedit/dihapus user
 - `assertValidRoute()` menolak user membuat/mengubah route dengan
   hostname yang sama dengan hostname API bawaan (reserved)
-- `config/routes.json` entry `id: "nxcloudflare"` dihapus, hanya
+- `config/routes.json` entry `id: "nxcloud"` dihapus, hanya
   tersisa route eksternal (`socket`)
 
 **Diverifikasi:** `node --check` semua file OK. Backend di-restart
@@ -872,16 +872,16 @@ menunjukkan 4 koneksi registered sukses, tanpa error ingress.
 
 ---
 
-## 13. Penghapusan hostname publik NxCloudflare API sepenuhnya (2026-09-11, lanjutan §12)
+## 13. Penghapusan hostname publik nxcloud API sepenuhnya (2026-09-11, lanjutan §12)
 
 User menghapus DNS `nx.tirtamoolango.id` di Cloudflare secara manual,
 dengan alasan eksplisit: *"sengaja aku hapus karena itu proyek pertama
 yang salah — rute ada di dalam sistem"*. Ini memperluas prinsip §12:
 bukan cuma "jangan simpan API sebagai route record", tapi **API
-NxCloudflare tidak boleh punya hostname publik sama sekali** — hanya
+nxcloud tidak boleh punya hostname publik sama sekali** — hanya
 diakses dari localhost (`127.0.0.1:8787`). Tunnel hanya untuk
 meng-expose route eksternal (app lain), bukan untuk mempublish
-NxCloudflare sendiri.
+nxcloud sendiri.
 
 **Perubahan:**
 - `builtinApiIngress()` di `src/api/routes.js` dihapus total (bukan
@@ -909,7 +909,7 @@ NxCloudflare sendiri.
   terlewat di §12; instruksi CLI di `domain.js` diganti dari
   `config set cloudflare.hostname ...` ke
   `config set cloudflare.rootDomain ...`
-- `config/nxcloudflare.json`: `cloudflare.hostname` diganti
+- `config/nxcloud.json`: `cloudflare.hostname` diganti
   `cloudflare.rootDomain: "tirtamoolango.id"` (tetap sama root domain-
   nya, field-nya saja yang dipisah dari konsep hostname publik)
 
@@ -945,7 +945,7 @@ memanggil `addDnsRoute()`. Pesan hasil (`dnsNote`) juga salah baca
 - Return value `createRoute()` sekarang punya field `dns` (hasil asli
   dari `addDnsRoute()`) selain `route` dan `sync`
 - `router.js`: `await createRoute(body)` di handler POST /api/routes
-- `Desktop/templates/nxcloudflare/domain.js`: `dnsNote` dibaca dari
+- `Desktop/templates/nxcloud/domain.js`: `dnsNote` dibaca dari
   `result.dns` (created/alreadyExisted/error) yang sekarang benar-benar
   merepresentasikan status DNS, bukan status ingress
 
@@ -967,10 +967,10 @@ Domain cuma Nama/Hostname/Port; tidak ada form Edit lain sejak §10
 "hapus bodok") — jadi menu Proses secara praktis SELALU kosong untuk
 siapapun yang memakai alur normal. Ini juga bertentangan langsung
 dengan prinsip arsitektur final (§12): *"Origin SELALU proses
-eksternal yang sudah ada duluan"* — NxCloudflare tidak seharusnya
+eksternal yang sudah ada duluan"* — nxcloud tidak seharusnya
 menjadi process manager untuk app lain, itu tugas eksternal (PM2,
 systemd, atau dijalankan manual). Menu Proses mengulang pola yang sama
-dengan Halaman Statis: fitur yang membuat NxCloudflare "mengelola
+dengan Halaman Statis: fitur yang membuat nxcloud "mengelola
 sesuatu di dalam dirinya" alih-alih murni memetakan hostname→origin.
 
 **Keputusan user**: hapus total, bukan diperbaiki dengan menambah form
@@ -978,7 +978,7 @@ pengisian command/projectPath.
 
 **Dihapus:**
 - `src/api/processes.js` (seluruh logic spawn/kill child process)
-- `Desktop/templates/nxcloudflare/proses.js`
+- `Desktop/templates/nxcloud/proses.js`
 - Endpoint `GET/POST/DELETE /api/routes/:id/process`,
   `GET /api/routes/:id/process/logs` di `router.js`
 - Field `command`, `projectPath`, `description` di
@@ -989,8 +989,8 @@ pengisian command/projectPath.
   `routeProcessLogFile()` di `utils/paths.js`
 - Method client API: `getRouteProcess`, `startRouteProcess`,
   `stopRouteProcess`, `getRouteProcessLogs`
-  (`client/nxcloudflareApi.js`, disinkronkan ke `Desktop/lib/`)
-- Menu "Proses" di sidebar `Desktop/templates/nxcloudflare/index.js`
+  (`client/nxcloudApi.js`, disinkronkan ke `Desktop/lib/`)
+- Menu "Proses" di sidebar `Desktop/templates/nxcloud/index.js`
   dan baris terkait di `README.md`
 
 **Diverifikasi**: `node --check` semua file OK. Backend di-restart —
@@ -1006,7 +1006,7 @@ dipanggil ulang tiap `readAll()`).
 
 User bertanya: di UI mana `cloudflare.rootDomain` (§13) bisa diatur?
 Jawaban: tidak ada — halaman Pengaturan sengaja read-only, satu-
-satunya cara sebelumnya adalah CLI (`nxcloudflare config set
+satunya cara sebelumnya adalah CLI (`nxcloud config set
 cloudflare.rootDomain ...`). Diputuskan untuk menambah kemampuan edit
 lewat UI, dengan endpoint backend **sempit** (bukan generic config-set
 menerima key apapun) — permukaan API dari Desktop sebaiknya sekecil
@@ -1019,8 +1019,8 @@ mungkin.
   `config.js` (dipakai CLI `config set`, sekarang dipakai juga dari
   HTTP). Loopback-write only, seperti endpoint tulis lainnya.
 - Client API: `setRootDomain(rootDomain)` di
-  `client/nxcloudflareApi.js` (disinkronkan ke `Desktop/lib/`)
-- `Desktop/templates/nxcloudflare/settings.js`: bagian "Root domain"
+  `client/nxcloudApi.js` (disinkronkan ke `Desktop/lib/`)
+- `Desktop/templates/nxcloud/settings.js`: bagian "Root domain"
   sekarang form (input + Simpan) alih-alih baris read-only. Bagian
   lain (Server, Nama Tunnel, Service, Control API) tetap read-only —
   hanya rootDomain yang dibuka karena itu satu-satunya field yang
@@ -1064,16 +1064,16 @@ kasus banyak domain.
   ada) — pola add/remove-item, bukan replace-seluruh-list, supaya
   race condition antar dua tab Desktop tidak saling menimpa
 - Client API: `setRootDomain()` (§16) diganti `addRootDomain()` +
-  `removeRootDomain()` (`client/nxcloudflareApi.js`, sync ke
+  `removeRootDomain()` (`client/nxcloudApi.js`, sync ke
   `Desktop/lib/`)
-- `Desktop/templates/nxcloudflare/settings.js`: bagian Root domain
+- `Desktop/templates/nxcloud/settings.js`: bagian Root domain
   sekarang daftar (`<ul>`) dengan tombol Hapus per item + form
   tambah satu domain baru, bukan satu input replace
-- `Desktop/templates/nxcloudflare/domain.js`: suffix subdomain (§16,
+- `Desktop/templates/nxcloud/domain.js`: suffix subdomain (§16,
   awalnya `<span>` teks tetap satu domain) diganti `<select>`
   dropdown berisi semua `rootDomains` — user pilih root domain saat
   menghubungkan hostname baru, bukan diketik
-- `config/nxcloudflare.json`: migrasi manual
+- `config/nxcloud.json`: migrasi manual
   `"rootDomain": "tirtamoolango.id"` → `"rootDomains":
   ["tirtamoolango.id"]`
 
@@ -1103,7 +1103,7 @@ dan urutan pemula tidak menyebut Domain sama sekali), import
 `clearState` tak terpakai di `index.js` dihapus, komentar stale
 `web/` di `paths.js` diperbarui.
 
-**Temuan baru dari user**: CLI (`bin/nxcloudflare.js`) sama sekali
+**Temuan baru dari user**: CLI (`bin/nxcloud.js`) sama sekali
 tidak punya perintah untuk Domain/Routes — hanya
 start/stop/restart/status/tunnel/config/logs. Padahal fitur inti
 (hubungkan hostname baru, lihat/uji/ubah-port/hapus route) cuma bisa
@@ -1111,7 +1111,7 @@ lewat GUI Desktop atau `curl` manual ke API. User minta ditambahkan
 setara CLI.
 
 **Ditambahkan**: `src/cli/route.js` — subcommand baru
-`nxcloudflare route`:
+`nxcloud route`:
 - `route list` — daftar route tersimpan (id, hostname, origin, status)
 - `route add <hostname|subdomain> <port> [--root <domain>] [--name <nama>]`
   — kalau argumen pertama tidak mengandung titik, dianggap subdomain
@@ -1129,16 +1129,16 @@ setara CLI.
 - Semua subcommand memanggil fungsi `src/api/routes.js` LANGSUNG
   (baca/tulis filesystem), bukan lewat HTTP ke backend — konsisten
   dengan pola `config.js` CLI yang sudah ada, jadi CLI tetap berfungsi
-  meskipun backend (`nxcloudflare start`) tidak sedang berjalan
-- Didaftarkan di `bin/nxcloudflare.js` (`case 'route'`) dan
+  meskipun backend (`nxcloud start`) tidak sedang berjalan
+- Didaftarkan di `bin/nxcloud.js` (`case 'route'`) dan
   `src/cli/help.js` (seksi baru dengan contoh)
 
-**Diverifikasi**: `node --check` semua file OK. `nxcloudflare route
+**Diverifikasi**: `node --check` semua file OK. `nxcloud route
 list` dijalankan nyata terhadap data production — menampilkan
 `socket`/`model` dengan benar, identik dengan yang ditampilkan GUI
-Desktop. `nxcloudflare route ping socket` berhasil (reachable). Uji
+Desktop. `nxcloud route ping socket` berhasil (reachable). Uji
 error path: `route add` tanpa argumen → exit 1 dengan pesan usage
-yang jelas. `nxcloudflare help` menampilkan seksi Route baru dengan
+yang jelas. `nxcloud help` menampilkan seksi Route baru dengan
 benar. `route add`/`set-port`/`remove` sungguhan TIDAK dites langsung
 (akan membuat/mengubah DNS asli di domain production) — tapi memakai
 fungsi backend yang sama persis dengan yang sudah divalidasi lewat

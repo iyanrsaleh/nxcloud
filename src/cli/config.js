@@ -18,7 +18,7 @@ export async function configCommand(args = []) {
   if (sub === 'get') {
     const key = args[1];
     if (!key) {
-      console.error('Usage: nxcloudflare config get <key>');
+      console.error('Usage: nxcloud config get <key>');
       return 1;
     }
     const config = loadConfig();
@@ -35,7 +35,7 @@ export async function configCommand(args = []) {
     const key = args[1];
     const value = args[2];
     if (!key || value === undefined) {
-      console.error('Usage: nxcloudflare config set <key> <value>');
+      console.error('Usage: nxcloud config set <key> <value>');
       console.error(`Keys:\n  ${CONFIG_KEYS.join('\n  ')}`);
       return 1;
     }
@@ -51,6 +51,6 @@ export async function configCommand(args = []) {
   }
 
   console.error(`Unknown config subcommand: ${sub}`);
-  console.error('Usage: nxcloudflare config [show|get|set|path|keys]');
+  console.error('Usage: nxcloud config [show|get|set|path|keys]');
   return 1;
 }

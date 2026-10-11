@@ -9,9 +9,9 @@ Domain diganti dari `motali.online` → **`tirtamoolango.id`** (registrar/panel:
 | Item | Nilai |
 | ---- | ----- |
 | Zone Cloudflare | `tirtamoolango.id` |
-| Hostname NxCloudflare | `nx.tirtamoolango.id` |
+| Hostname nxcloud | `nx.tirtamoolango.id` |
 | Panel ganti NS | IndoWebHoster (akun yang sudah Anda punya) |
-| `motali.online` | **Tidak dipakai** untuk NxCloudflare (boleh biarkan / batalkan di Cloudflare) |
+| `motali.online` | **Tidak dipakai** untuk nxcloud (boleh biarkan / batalkan di Cloudflare) |
 
 ---
 
@@ -53,23 +53,23 @@ Di Cloudflare untuk `tirtamoolango.id` → Check nameservers / tunggu **Active**
 
 ---
 
-## Langkah 4 — Tunnel + NxCloudflare
+## Langkah 4 — Tunnel + nxcloud
 
 Setelah Active:
 
 ```powershell
-cd D:\Framework\CLI\NxCloudflare
+cd D:\Framework\CLI\nxcloud
 .\.tools\cloudflared.exe tunnel login
-.\.tools\cloudflared.exe tunnel create nxcloudflare
+.\.tools\cloudflared.exe tunnel create nxcloud
 ```
 
 Copy credentials ke `.credentials\`, buat `config.yml` dari example (hostname `nx.tirtamoolango.id`), lalu:
 
 ```powershell
-node bin/nxcloudflare.js config set cloudflare.mode named
-node bin/nxcloudflare.js config set cloudflare.hostname nx.tirtamoolango.id
-node bin/nxcloudflare.js config set cloudflare.tunnelName nxcloudflare
-node bin/nxcloudflare.js start
+node bin/nxcloud.js config set cloudflare.mode named
+node bin/nxcloud.js config set cloudflare.hostname nx.tirtamoolango.id
+node bin/nxcloud.js config set cloudflare.tunnelName nxcloud
+node bin/nxcloud.js start
 ```
 
 Uji: `https://nx.tirtamoolango.id/health`

@@ -1,4 +1,4 @@
-# Diagram Alur — NxCloudflare (kondisi saat ini)
+# Diagram Alur — nxcloud (kondisi saat ini)
 
 > Menggambarkan alur request nyata setelah perbaikan `isLoopback()` di `src/server.js`
 > dan penambahan subdomain `web.tirtamoolango.id` (static HTML server).
@@ -9,7 +9,7 @@
 ## 0. Peta tunnel & subdomain (gambaran besar saat ini)
 
 ```text
-                         Cloudflare Tunnel: "nxcloudflare"
+                         Cloudflare Tunnel: "nxcloud"
                          tunnel ID: 2153403b-e7ab-4d00-a81b-b8db497a37e4
                          (satu tunnel, banyak hostname ingress)
 
@@ -19,7 +19,7 @@
         │                       │                       │
         ▼                       ▼                       ▼
  127.0.0.1:8787            127.0.0.1:7080           127.0.0.1:8789
- (NxCloudflare API/         (service lain,           (NxCloudflare static
+ (nxcloud API/         (service lain,           (nxcloud static
   server.js + api/router)    di luar repo ini)         web server — BARU)
         │                                               │
         ▼                                               ▼
@@ -32,7 +32,7 @@
 Status hidup (dites hari ini):
 - `nx.tirtamoolango.id` → 200, tunnel connected
 - `web.tirtamoolango.id` → 200, HTML tersaji, DNS CNAME dibuat via
-  `cloudflared tunnel route dns nxcloudflare web.tirtamoolango.id`
+  `cloudflared tunnel route dns nxcloud web.tirtamoolango.id`
 - `socket.tirtamoolango.id` → di luar cakupan kerja sesi ini (service lain)
 
 ---
@@ -231,7 +231,7 @@ Dibangun:
 - src/web/staticServer.js   (server statis baru, port 8789)
 - web/index.html            (halaman contoh)
 - src/index.js              (start/stop bareng server utama & tunnel)
-- config/nxcloudflare.json  (blok "web": enabled/host/port/hostname)
+- config/nxcloud.json  (blok "web": enabled/host/port/hostname)
 - .credentials/config.yml   (ingress web.tirtamoolango.id → 127.0.0.1:8789)
 - DNS CNAME dibuat via cloudflared CLI (bukan dashboard manual)
 

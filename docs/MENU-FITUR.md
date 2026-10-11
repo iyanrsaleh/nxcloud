@@ -1,6 +1,6 @@
-# Menu & Fitur — NxCloudflare
+# Menu & Fitur — nxcloud
 
-> NxCloudflare = **tool pengelola pembelokan (routing)** antara internet/Cloudflare Tunnel dan origin di PC/LAN — bukan hanya server internal sendiri.  
+> nxcloud = **tool pengelola pembelokan (routing)** antara internet/Cloudflare Tunnel dan origin di PC/LAN — bukan hanya server internal sendiri.  
 > Dokumen ini: **nama menu + fitur**. Desain visual dasbor = tugas terpisah.
 
 **Tanggal:** 2026-09-10 (revisi istilah 2026-09-11)
@@ -21,9 +21,9 @@
 Internet / LAN user
         │
         ▼
-  Cloudflare Tunnel          ← dikelola NxCloudflare
+  Cloudflare Tunnel          ← dikelola nxcloud
         │
-        ├──→ Internal   http://127.0.0.1:8787     (API/panel NxCloudflare)
+        ├──→ Internal   http://127.0.0.1:8787     (API/panel nxcloud)
         ├──→ Eksternal  http://127.0.0.1:7080     (contoh: NxSocket, same PC)
         ├──→ Eksternal  http://127.0.0.1:7331     (contoh: Teritip serve)
         └──→ … banyak pembelokan tersebar
@@ -32,7 +32,7 @@ Internet / LAN user
 
 | Jenis origin | Contoh | Arti |
 | ------------ | ------ | ---- |
-| **Internal** | `127.0.0.1:8787` | Layanan bawaan NxCloudflare |
+| **Internal** | `127.0.0.1:8787` | Layanan bawaan nxcloud |
 | **Eksternal** | `127.0.0.1:7080`, `127.0.0.1:7331`, … | App di **PC yang sama**, port lain |
 | **Eksternal (LAN)** | `192.168.x.x:port` | Hanya jika app di **mesin lain** di jaringan |
 
@@ -77,7 +77,7 @@ Opsional nanti (jangan di v1 UI kecuali perlu):
 
 | Fitur | Keterangan | Data (sekarang / nanti) |
 | ----- | ---------- | ----------------------- |
-| Status server NxCloudflare | Hidup/mati, host:port | `GET /api/status` |
+| Status server nxcloud | Hidup/mati, host:port | `GET /api/status` |
 | Status tunnel | Connected / stopped, URL publik default | `GET /api/tunnel` |
 | Jumlah pembelokan | Berapa route aktif (internal + eksternal) | nanti `GET /api/routes` |
 | Pintasan | Link ke Pembelokan / Tunnel | UI saja |
@@ -112,7 +112,7 @@ Ini menu yang menjawab kasus **NxSocket `http://127.0.0.1:7080`** (same PC) dan 
 
 | Nama | Hostname | Origin | Tipe | Status |
 | ---- | -------- | ------ | ---- | ------ |
-| NxCloudflare | `nx.tirtamoolango.id` | `http://127.0.0.1:8787` | Internal | Aktif |
+| nxcloud | `nx.tirtamoolango.id` | `http://127.0.0.1:8787` | Internal | Aktif |
 | NxSocket | `socket.tirtamoolango.id` | `http://127.0.0.1:7080` | Eksternal | Aktif |
 
 ---
@@ -159,7 +159,7 @@ Bisa digabung ke Pembelokan di v1 UI kalau ingin lebih sederhana (menu Domain di
 | Lihat config | `GET /api/config` |
 | allowControl | Apakah stop/restart diizinkan (lokal) |
 | Bind host/port | Panel internal |
-| Ubah via CLI | Arahkan ke `nxcloudflare config set` sampai ada form tulis aman |
+| Ubah via CLI | Arahkan ke `nxcloud config set` sampai ada form tulis aman |
 
 ---
 
@@ -167,8 +167,8 @@ Bisa digabung ke Pembelokan di v1 UI kalau ingin lebih sederhana (menu Domain di
 
 | | Internal | Eksternal |
 | --- | -------- | --------- |
-| Origin | Proses / port milik NxCloudflare | App lain (NxSocket, Teritip, …) |
-| Dikelola hidup-mati oleh NxCloudflare? | Ya (start/stop tool) | Tidak wajib (hanya belokkan); start opsional nanti |
+| Origin | Proses / port milik nxcloud | App lain (NxSocket, Teritip, …) |
+| Dikelola hidup-mati oleh nxcloud? | Ya (start/stop tool) | Tidak wajib (hanya belokkan); start opsional nanti |
 | Contoh | `:8787` | `:7080` (same PC via `127.0.0.1`) |
 | Menu | Ringkasan + Pembelokan (satu baris) | **Pembelokan** (banyak baris) |
 
@@ -210,7 +210,7 @@ Nama resource API disarankan **`routes`** (selaras menu **Pembelokan**), field:
 
 ## 6. Stub Desktop — sesuaikan nama menu
 
-Target folder: `Teritip/Desktop/templates/nxcloudflare/`
+Target folder: `Teritip/Desktop/templates/nxcloud/`
 
 | File | Menu |
 | ---- | ---- |
@@ -238,4 +238,4 @@ Target folder: `Teritip/Desktop/templates/nxcloudflare/`
 
 ## 8. Satu kalimat positioning
 
-**NxCloudflare** mengelola **banyak pembelokan tersebar** (internal & eksternal) lewat Cloudflare Tunnel — dari panel/API lokal maupun hostname publik — sehingga app seperti NxSocket di LAN bisa dipublikasikan tanpa mengubah app itu sendiri.
+**nxcloud** mengelola **banyak pembelokan tersebar** (internal & eksternal) lewat Cloudflare Tunnel — dari panel/API lokal maupun hostname publik — sehingga app seperti NxSocket di LAN bisa dipublikasikan tanpa mengubah app itu sendiri.

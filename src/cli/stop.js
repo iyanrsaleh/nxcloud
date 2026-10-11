@@ -24,7 +24,7 @@ export async function stopCommand() {
   removePid(TUNNEL_PID_FILE);
 
   if (masterPid && isProcessRunning(masterPid)) {
-    console.log(`Stopping NxCloudflare (pid ${masterPid})...`);
+    console.log(`Stopping nxcloud (pid ${masterPid})...`);
     await killProcess(masterPid);
     stopped = true;
   } else {
@@ -44,7 +44,7 @@ export async function stopCommand() {
   });
 
   if (!stopped) {
-    console.log('NxCloudflare is not running');
+    console.log('nxcloud is not running');
     return 0;
   }
 

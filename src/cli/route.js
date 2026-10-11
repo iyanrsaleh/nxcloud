@@ -36,7 +36,7 @@ function parseFlags(args) {
 function printList() {
   const data = listRoutes();
   if (!data.routes.length) {
-    console.log('Belum ada route. Tambah dengan: nxcloudflare route add <hostname> <port>');
+    console.log('Belum ada route. Tambah dengan: nxcloud route add <hostname> <port>');
     return 0;
   }
   for (const r of data.routes) {
@@ -49,7 +49,7 @@ function printList() {
 async function addRoute(positional, flags) {
   const [hostname, port] = positional;
   if (!hostname || !port) {
-    console.error('Usage: nxcloudflare route add <hostname> <port> [--root <domain>] [--name <nama>]');
+    console.error('Usage: nxcloud route add <hostname> <port> [--root <domain>] [--name <nama>]');
     return 1;
   }
 
@@ -61,7 +61,7 @@ async function addRoute(positional, flags) {
       console.error(
         roots.length
           ? `Hostname "${hostname}" tidak lengkap dan ada >1 root domain terkelola — pakai --root <domain>.\nRoot domain terkelola: ${roots.join(', ')}`
-          : 'Belum ada root domain terkelola. Set dulu: nxcloudflare config set cloudflare.rootDomains <domain>'
+          : 'Belum ada root domain terkelola. Set dulu: nxcloud config set cloudflare.rootDomains <domain>'
       );
       return 1;
     }
@@ -92,7 +92,7 @@ async function addRoute(positional, flags) {
 async function pingRoute(positional) {
   const [id] = positional;
   if (!id) {
-    console.error('Usage: nxcloudflare route ping <id>');
+    console.error('Usage: nxcloud route ping <id>');
     return 1;
   }
   try {
@@ -112,7 +112,7 @@ async function pingRoute(positional) {
 function setPort(positional) {
   const [id, port] = positional;
   if (!id || !port) {
-    console.error('Usage: nxcloudflare route set-port <id> <port>');
+    console.error('Usage: nxcloud route set-port <id> <port>');
     return 1;
   }
   try {
@@ -131,7 +131,7 @@ function setPort(positional) {
 function removeRoute(positional) {
   const [id] = positional;
   if (!id) {
-    console.error('Usage: nxcloudflare route remove <id>');
+    console.error('Usage: nxcloud route remove <id>');
     return 1;
   }
   try {
@@ -157,6 +157,6 @@ export async function routeCommand(args = []) {
   if (sub === 'remove' || sub === 'rm' || sub === 'delete') return removeRoute(positional);
 
   console.error(`Unknown route subcommand: ${sub}`);
-  console.error('Usage: nxcloudflare route [list|add|ping|set-port|remove]');
+  console.error('Usage: nxcloud route [list|add|ping|set-port|remove]');
   return 1;
 }

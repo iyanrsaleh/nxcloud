@@ -3,22 +3,22 @@
 > **Status:** rencana awal. Dasbor UI = tugas Anda nanti.  
 > **Sekarang:** siapkan fondasi API + client, dan daftar repo yang harus dibangun.  
 > **Referensi pendekatan:** `D:\Framework\CLI\Teritip\engine\README.md` + `Analsis.md` (sebagai POLA/REFERENSI saja)  
-> **Domain publik:** `https://nx.tirtamoolango.id` (NxCloudflare + Named Tunnel)
+> **Domain publik:** `https://nx.tirtamoolango.id` (nxcloud + Named Tunnel)
 
 > **⚠️ Perubahan arah (2026-09-11):** Rencana awal di §1/§5/§8 menempatkan
 > `Teritip Desktop` sebagai shell GUI final ("satu pintu kelola semua app",
 > client diletakkan di `Teritip/Desktop/lib/`). Keputusan itu **berubah**:
-> **NxCloudflare akan punya Desktop/GUI pengelola sendiri** (proyek/folder
+> **nxcloud akan punya Desktop/GUI pengelola sendiri** (proyek/folder
 > terpisah, belum dibangun). Teritip Desktop sekarang berstatus **referensi
 > pola saja** (contoh struktur template, cara `NEXA.*Api` bekerja), bukan
-> tempat integrasi permanen NxCloudflare. Stub yang sudah terlanjur dibuat di
-> `Teritip/Desktop/templates/nxcloudflare/` (Fase P1/P2, lihat §7) TETAP ADA
+> tempat integrasi permanen nxcloud. Stub yang sudah terlanjur dibuat di
+> `Teritip/Desktop/templates/nxcloud/` (Fase P1/P2, lihat §7) TETAP ADA
 > apa adanya sebagai referensi — tidak disentuh/disinkronkan lagi dari sesi
-> NxCloudflare ini, termasuk gap yang diketahui: mirror client di
-> `Teritip/Desktop/lib/nxcloudflareApi.js` belum punya dukungan
+> nxcloud ini, termasuk gap yang diketahui: mirror client di
+> `Teritip/Desktop/lib/nxcloudApi.js` belum punya dukungan
 > `controlToken` (Fase P4) dan README stub-nya menyebut menu Pembelokan
 > sebagai "mock" padahal kodenya sudah memanggil `/api/routes` sungguhan.
-> Desktop pengelola NxCloudflare yang sesungguhnya akan direncanakan
+> Desktop pengelola nxcloud yang sesungguhnya akan direncanakan
 > terpisah saat dikerjakan.
 
 **Tanggal:** 2026-09-10 (direvisi 2026-09-11)
@@ -35,7 +35,7 @@ Sama seperti `teritip serve` + Desktop:
 | **HTTP API** | Lapisan tipis di atas engine (`http` bawaan, JSON) | Bukan Express wajib |
 | **Client API** | Modul JS yang memanggil endpoint (dipakai Desktop) | Bukan halaman visual |
 | **Desktop** | Shell GUI — menu, halaman, tombol | Tidak menduplikasi logika engine |
-| **NxCloudflare** | Gateway PC ↔ Internet (tunnel + reverse ke service lokal) | Bukan tempat isi bisnis app |
+| **nxcloud** | Gateway PC ↔ Internet (tunnel + reverse ke service lokal) | Bukan tempat isi bisnis app |
 
 ```text
 User (browser / Desktop)
@@ -50,13 +50,13 @@ User (browser / Desktop)
 ┌───────────────────────────┐
 │  App APIs (localhost)     │
 │  • teritip serve :7331    │
-│  • nxcloudflare API :8787 │
+│  • nxcloud API :8787 │
 │  • app lain nanti         │
 └─────────────┬─────────────┘
               │
               ▼
 ┌───────────────────────────┐
-│  NxCloudflare + Tunnel    │  ← nx.tirtamoolango.id
+│  nxcloud + Tunnel    │  ← nx.tirtamoolango.id
 │  (publik / remote akses)  │
 └───────────────────────────┘
 ```
@@ -82,10 +82,10 @@ Urutan prioritas. Satu baris = satu “unit kerja” yang bisa jadi folder/repo 
 
 | # | Proyek / modul | Lokasi usulan | Status sekarang | Harus dibangun? | Fungsi |
 | - | -------------- | ------------- | --------------- | --------------- | ------ |
-| 1 | **NxCloudflare Core** | `D:\Framework\CLI\NxCloudflare` | Ada (server+CLI+tunnel) | **Perkuat API** | Gateway, status, tunnel, health |
-| 2 | **NxCloudflare API (REST)** | `NxCloudflare/src/api/` (baru) | Belum (hanya `/` `/health` `/status`) | **Ya — prioritas** | Kontrak HTTP untuk dasbor/Desktop |
-| 3 | **NxCloudflare Client** | `NxCloudflare/client/` atau `Teritip/Desktop/lib/nxcloudflare-api.js` | Belum | **Ya — prioritas** | Fungsi `getStatus()`, `getTunnel()`, … untuk template Desktop |
-| 4 | **NxCloudflare Desktop plugin** | `Teritip/Desktop/templates/nxcloudflare/` | Belum | **Ya (setelah API+client)** | Halaman GUI — **Anda konsepkan** |
+| 1 | **nxcloud Core** | `D:\Framework\CLI\nxcloud` | Ada (server+CLI+tunnel) | **Perkuat API** | Gateway, status, tunnel, health |
+| 2 | **nxcloud API (REST)** | `nxcloud/src/api/` (baru) | Belum (hanya `/` `/health` `/status`) | **Ya — prioritas** | Kontrak HTTP untuk dasbor/Desktop |
+| 3 | **nxcloud Client** | `nxcloud/client/` atau `Teritip/Desktop/lib/nxcloud-api.js` | Belum | **Ya — prioritas** | Fungsi `getStatus()`, `getTunnel()`, … untuk template Desktop |
+| 4 | **nxcloud Desktop plugin** | `Teritip/Desktop/templates/nxcloud/` | Belum | **Ya (setelah API+client)** | Halaman GUI — **Anda konsepkan** |
 | 5 | **Teritip Engine + serve** | `D:\Framework\CLI\Teritip` | Sudah lengkap | Tidak (pakai existing) | Runtime app/container + API `:7331` |
 | 6 | **Teritip Desktop shell** | `D:\Framework\CLI\Teritip\Desktop` | Sudah ada (teritip pages) | **Integrasi saja** | Pintu masuk semua app |
 | 7 | **App packages** (nanti) | Desktop templates + service API masing-masing | — | Menyusul | App bisnis di belakang Nx/Teritip |
@@ -93,7 +93,7 @@ Urutan prioritas. Satu baris = satu “unit kerja” yang bisa jadi folder/repo 
 ### Ringkas: yang *wajib* dibangun dulu (sebelum dasbor Anda)
 
 ```text
-[A] NxCloudflare REST API  (perluas server)
+[A] nxcloud REST API  (perluas server)
 [B] Client API JS          (konsumsi A)
 [C] Daftarkan di Desktop   (stub halaman + NEXA.nxApi) — UI kosong/minimal OK
 ```
@@ -102,7 +102,7 @@ Dasbor penuh (wireframe, UX) = setelah A–C siap.
 
 ---
 
-## 4. Kontrak API NxCloudflare (siapkan dulu)
+## 4. Kontrak API nxcloud (siapkan dulu)
 
 Ikuti pola Teritip: **endpoint = mirror CLI**, JSON, error `{ "error": "..." }`.
 
@@ -137,20 +137,20 @@ Ikuti pola Teritip: **endpoint = mirror CLI**, JSON, error `{ "error": "..." }`.
 ## 5. Client API (untuk Desktop)
 
 > Lihat catatan perubahan arah di kepala dokumen. Update 2026-09-11:
-> Desktop NxCloudflare mandiri **sudah ada** — `NxCloudflare/Desktop/`
+> Desktop nxcloud mandiri **sudah ada** — `nxcloud/Desktop/`
 > (scaffold, identitas dibersihkan, `npm install` selesai). Lihat
 > `Plan-desktop.md` §6 untuk detail lengkap.
 
 File client API, per status keaktifan:
 
 ```text
-NxCloudflare/client/nxcloudflareApi.js    ← sumber utama, terus di-update (mis. Fase P4 controlToken)
-NxCloudflare/Desktop/lib/nxcloudflareApi.js ← salinan aktif, dipakai Desktop mandiri (NEXA.nxcloudflareApi)
-Teritip/Desktop/lib/nxcloudflareApi.js    ← mirror lama, TIDAK disinkronkan lagi (referensi historis)
+nxcloud/client/nxcloudApi.js    ← sumber utama, terus di-update (mis. Fase P4 controlToken)
+nxcloud/Desktop/lib/nxcloudApi.js ← salinan aktif, dipakai Desktop mandiri (NEXA.nxcloudApi)
+Teritip/Desktop/lib/nxcloudApi.js    ← mirror lama, TIDAK disinkronkan lagi (referensi historis)
 ```
 
-`NxCloudflare/Desktop/lib/nxcloudflareApi.js` disinkronkan **manual**
-(disalin ulang) dari `NxCloudflare/client/nxcloudflareApi.js` per
+`nxcloud/Desktop/lib/nxcloudApi.js` disinkronkan **manual**
+(disalin ulang) dari `nxcloud/client/nxcloudApi.js` per
 2026-09-11 — termasuk dukungan `controlToken`/`X-Nx-Token`. Tidak ada
 mekanisme sinkronisasi otomatis; kalau client sumber utama diupdate lagi,
 salinan di `Desktop/lib/` perlu disalin ulang manual.
@@ -159,7 +159,7 @@ Pola (seperti `NEXA.teritipApi`):
 
 ```js
 // Contoh kontrak client — implementasi nanti
-NEXA.nxcloudflareApi = {
+NEXA.nxcloudApi = {
   baseUrl: "http://127.0.0.1:8787",
   getHealth: () => fetch(...),
   getStatus: () => fetch(...),
@@ -174,8 +174,8 @@ NEXA.nxcloudflareApi = {
 Template dasbor nanti hanya:
 
 ```text
-Desktop/templates/nxcloudflare/
-  index.js      ← sidebar entry "NxCloudflare"
+Desktop/templates/nxcloud/
+  index.js      ← sidebar entry "nxcloud"
   overview.js   ← status/tunnel (Anda desain)
   logs.js       ← opsional
 ```
@@ -186,32 +186,32 @@ Desktop/templates/nxcloudflare/
 
 | Hostname | Target | Catatan |
 | -------- | ------ | ------- |
-| `nx.tirtamoolango.id` | NxCloudflare `:8787` | Sudah jalan (named tunnel) |
+| `nx.tirtamoolango.id` | nxcloud `:8787` | Sudah jalan (named tunnel) |
 | `socket.tirtamoolango.id` | `127.0.0.1:7080` | Service lain, di luar cakupan repo ini |
-| `web.tirtamoolango.id` | NxCloudflare static web `:8789` | ✅ SUDAH DIEKSEKUSI (2026-09-11) — di luar cakupan asli Plan ini, ditambah langsung sesuai permintaan; lihat `digram.md` §0/§1b/§5 untuk detail arsitektur. Server: `src/web/staticServer.js`, konten: `web/`, config: `web.*` di `config/nxcloudflare.json`. DNS CNAME dibuat via `cloudflared tunnel route dns`. Publik penuh (tanpa loopback-guard) — anti path-traversal di level filesystem. |
-| Lokal Desktop NxCloudflare | `127.0.0.1:8787` (API) + `127.0.0.1:7801` (Desktop Electron) | Kelola NxCloudflare tanpa internet — lihat `Plan-desktop.md` |
+| `web.tirtamoolango.id` | nxcloud static web `:8789` | ✅ SUDAH DIEKSEKUSI (2026-09-11) — di luar cakupan asli Plan ini, ditambah langsung sesuai permintaan; lihat `digram.md` §0/§1b/§5 untuk detail arsitektur. Server: `src/web/staticServer.js`, konten: `web/`, config: `web.*` di `config/nxcloud.json`. DNS CNAME dibuat via `cloudflared tunnel route dns`. Publik penuh (tanpa loopback-guard) — anti path-traversal di level filesystem. |
+| Lokal Desktop nxcloud | `127.0.0.1:8787` (API) + `127.0.0.1:7801` (Desktop Electron) | Kelola nxcloud tanpa internet — lihat `Plan-desktop.md` |
 | `www` / apex | Terpisah | Bukan panel kelola (kecuali diputuskan nanti) |
 
 **Alur user kelola aplikasi (rencana awal, SUDAH BERUBAH — lihat catatan di kepala dokumen):**
 
 ~~1. Buka Teritip Desktop~~
-~~2. Menu NxCloudflare → status tunnel / domain~~
+~~2. Menu nxcloud → status tunnel / domain~~
 ~~3. Menu Teritip → images/containers~~
 ~~4. Menu app lain → masing-masing template Desktop~~
 
 **Alur baru (✅ scaffold-nya sudah ada, lihat `Plan-desktop.md` §6):**
-NxCloudflare dikelola lewat Desktop/GUI miliknya sendiri —
-`NxCloudflare/Desktop/` (Electron, port `7801`, identitas sudah dibersihkan
+nxcloud dikelola lewat Desktop/GUI miliknya sendiri —
+`nxcloud/Desktop/` (Electron, port `7801`, identitas sudah dibersihkan
 dari sisa Teritip, `npm install` selesai). Teritip Desktop kembali murni
 mengelola Teritip saja; stub yang tersisa di
-`Teritip/Desktop/templates/nxcloudflare/` berstatus referensi historis
+`Teritip/Desktop/templates/nxcloud/` berstatus referensi historis
 (lihat catatan di kepala dokumen), tidak disinkronkan lagi.
 
 ---
 
 ## 7. Fase eksekusi (teknis — sebelum konsep dasbor Anda)
 
-### Fase P0 — API NxCloudflare
+### Fase P0 — API nxcloud
 
 - [x] Router `/api/*` di `src/api/router.js` + `src/server.js`
 - [x] Implement endpoint §4.1 (read-only: health/status/config/tunnel/logs)
@@ -220,14 +220,14 @@ mengelola Teritip saja; stub yang tersisa di
 
 ### Fase P1 — Client
 
-- [x] `NxCloudflare/client/nxcloudflareApi.js` — sumber utama, terus di-update (mis. Fase P4 controlToken)
-- [x] ~~`Teritip/Desktop/lib/nxcloudflareApi.js`~~ — mirror awal, sekarang referensi historis (lihat catatan di kepala dokumen)
-- [x] `NxCloudflare/Desktop/lib/nxcloudflareApi.js` + `nxcloudflareApi` di `Desktop/config.js` (`NEXA.nxcloudflareApi`, base `http://127.0.0.1:8787`) — ✅ lokasi aktif sekarang, lihat `Plan-desktop.md` §6
+- [x] `nxcloud/client/nxcloudApi.js` — sumber utama, terus di-update (mis. Fase P4 controlToken)
+- [x] ~~`Teritip/Desktop/lib/nxcloudApi.js`~~ — mirror awal, sekarang referensi historis (lihat catatan di kepala dokumen)
+- [x] `nxcloud/Desktop/lib/nxcloudApi.js` + `nxcloudApi` di `Desktop/config.js` (`NEXA.nxcloudApi`, base `http://127.0.0.1:8787`) — ✅ lokasi aktif sekarang, lihat `Plan-desktop.md` §6
 - [x] Smoke test Node: `getHealth` / `getTunnel` OK
 
 ### Fase P2 — Stub Desktop
 
-- [x] Folder `templates/nxcloudflare/` + sidebar (“NxCloudflare”) — ✅ di `NxCloudflare/Desktop/templates/nxcloudflare/` (lokasi aktif); folder sama di `Teritip/Desktop/` tersisa sebagai referensi historis
+- [x] Folder `templates/nxcloud/` + sidebar (“nxcloud”) — ✅ di `nxcloud/Desktop/templates/nxcloud/` (lokasi aktif); folder sama di `Teritip/Desktop/` tersisa sebagai referensi historis
 - [x] Halaman stub Overview / Pembelokan / Tunnel / Logs / Settings (JSON mentah, wiring API live — bukan mock)
 - [x] Identitas Desktop app dibersihkan dari sisa Teritip + `npm install` (2026-09-11, lihat `Plan-desktop.md` §6)
 - [x] **Stop di sini untuk UI** — Anda ambil alih konsep dasbor (visual/UX, §3 `Plan-desktop.md`)
@@ -243,7 +243,7 @@ mengelola Teritip saja; stub yang tersisa di
 - [x] Token untuk `/api/control/stop` dan `/api/control/restart` — header `X-Nx-Token`, dicek pakai `timingSafeEqual` di `src/api/router.js` (`handleControl`)
 - [x] Config baru `api.controlToken` (default kosong = fitur nonaktif, backward compatible — tidak mengubah perilaku default)
 - [x] `GET /api/config` melaporkan `controlTokenSet: true/false` tanpa membocorkan nilai token itu sendiri
-- [x] Client `client/nxcloudflareApi.js`: `createNxCloudflareApi(baseUrl, { controlToken })` mengirim header otomatis untuk `stop()`/`restart()`
+- [x] Client `client/nxcloudApi.js`: `createnxcloudApi(baseUrl, { controlToken })` mengirim header otomatis untuk `stop()`/`restart()`
 - [x] Diverifikasi: tanpa token → 401, token salah → 401, token benar → 202 + aksi terpanggil
 - [ ] Cloudflare Access — belum (token cukup untuk kebutuhan localhost saat ini; Access baru relevan kalau endpoint sensitif suatu saat sengaja dibuka lewat tunnel)
 - [ ] Dokumentasi terpisah "jangan expose control API" — belum ditulis sebagai dokumen, baru tercatat di sini + `digram.md`
@@ -258,14 +258,14 @@ Catatan: proteksi utama tetap `loopback`-check (lihat `digram.md`) — token ini
 | ----- | ----- |
 | Rencana ini + API + client | Agent / eksekusi teknis |
 | Stub Desktop di Teritip (Fase P1/P2) | Sudah dibuat, kini berstatus referensi pola — tidak dikembangkan lagi dari sini |
-| Konsep & desain Desktop/GUI NxCloudflare sendiri | **Anda** (belum direncanakan detail — proyek/folder terpisah) |
-| App bisnis di belakang Teritip | Menyusul per app (di luar cakupan NxCloudflare) |
+| Konsep & desain Desktop/GUI nxcloud sendiri | **Anda** (belum direncanakan detail — proyek/folder terpisah) |
+| App bisnis di belakang Teritip | Menyusul per app (di luar cakupan nxcloud) |
 
 ---
 
 ## 9. Keputusan yang diminta sebelum coding P0
 
-1. Client API diletakkan di **`Teritip/Desktop/lib/`** (disarankan) atau di dalam repo NxCloudflare?  
+1. Client API diletakkan di **`Teritip/Desktop/lib/`** (disarankan) atau di dalam repo nxcloud?  
 2. Endpoint kontrol (`stop`/`restart`) **localhost-only** dulu — OK?  
 3. Stub Desktop (P2) boleh JSON mentah dulu sebelum Anda desain — OK?
 

@@ -13,7 +13,7 @@ export async function logsCommand(args = []) {
   };
 
   if (!(which in map) && which !== 'all') {
-    console.log('Usage: nxcloudflare logs [server|tunnel|error|all] [lines]');
+    console.log('Usage: nxcloud logs [server|tunnel|error|all] [lines]');
     return 1;
   }
 

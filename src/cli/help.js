@@ -1,14 +1,14 @@
 export function printHelp() {
   console.log(`
-NxCloudflare — local Node.js server + Cloudflare Tunnel
+nxcloud — local Node.js server + Cloudflare Tunnel
 
 Usage:
-  nxcloudflare <command> [options]
+  nxcloud <command> [options]
 
 Commands:
   start       Start local server and Cloudflare Tunnel
-  stop        Stop running NxCloudflare processes
-  restart     Restart NxCloudflare
+  stop        Stop running nxcloud processes
+  restart     Restart nxcloud
   status      Show server and tunnel status
   tunnel      Show tunnel information
   route       Manage hostname -> origin routes
@@ -17,29 +17,29 @@ Commands:
   help        Show this help
 
 Route (connect a new hostname to an external app, same as Domain/Routes in the Desktop app):
-  nxcloudflare route list
-  nxcloudflare route add <hostname|subdomain> <port> [--root <domain>] [--name <nama>]
-  nxcloudflare route ping <id>
-  nxcloudflare route set-port <id> <port>
-  nxcloudflare route remove <id>
+  nxcloud route list
+  nxcloud route add <hostname|subdomain> <port> [--root <domain>] [--name <nama>]
+  nxcloud route ping <id>
+  nxcloud route set-port <id> <port>
+  nxcloud route remove <id>
 
 Config:
-  nxcloudflare config show
-  nxcloudflare config get <key>
-  nxcloudflare config set <key> <value>
-  nxcloudflare config keys
-  nxcloudflare config path
+  nxcloud config show
+  nxcloud config get <key>
+  nxcloud config set <key> <value>
+  nxcloud config keys
+  nxcloud config path
 
 Start options:
   --no-tunnel   Start local server only (skip cloudflared)
 
 Examples:
-  nxcloudflare start
-  nxcloudflare start --no-tunnel
-  nxcloudflare config set server.port 8788
-  nxcloudflare config set cloudflare.rootDomains example.com
-  nxcloudflare route add blog 3000
-  nxcloudflare route add blog.example.com 3000
-  nxcloudflare status
+  nxcloud start
+  nxcloud start --no-tunnel
+  nxcloud config set server.port 8788
+  nxcloud config set cloudflare.rootDomains example.com
+  nxcloud route add blog 3000
+  nxcloud route add blog.example.com 3000
+  nxcloud status
 `.trim());
 }

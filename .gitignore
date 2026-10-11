@@ -5,7 +5,7 @@ Desktop/
 .runtime/
 .tools/
 dist/
-.nxcloudflare-exe-build/
+.nxcloud-exe-build/
 *.log
 .env
 .env.*
@@ -17,7 +17,7 @@ dist/
 !.credentials/.gitkeep
 .DS_Store
 Thumbs.db
-config/nxcloudflare.json
+config/nxcloud.json
 config/routes.json
-!config/nxcloudflare.example.json
+!config/nxcloud.example.json
 !config/routes.example.json

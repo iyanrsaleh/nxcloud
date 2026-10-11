@@ -3,8 +3,8 @@
 ## Masalah
 
 `dist/` adalah folder OUTPUT build (`npm run build:exe` /
-`build:exe:linux`) — isinya cuma boleh `nxcloudflare.exe` (atau
-`nxcloudflare` di Linux), `.tools/cloudflared*`, dan `SHA256SUMS.txt`.
+`build:exe:linux`) — isinya cuma boleh `nxcloud.exe` (atau
+`nxcloud` di Linux), `.tools/cloudflared*`, dan `SHA256SUMS.txt`.
 Itu yang didistribusikan ke orang lain.
 
 `build-exe.mjs` dan `build-exe-linux.mjs` SUDAH aman — keduanya
@@ -14,14 +14,14 @@ pernah menyalin config/credential project ke situ.
 **Sumber masalah nyata**: kalau `.exe` hasil build itu DIJALANKAN
 langsung di dalam `dist/` (mis. untuk testing cepat), maka karena
 mode SEA membuat `ROOT_DIR = folder tempat .exe berada`
-(`src/utils/paths.js`), NxCloudflare akan membuat seluruh state
+(`src/utils/paths.js`), nxcloud akan membuat seluruh state
 runtime-nya DI SITU JUGA:
 
 ```
 dist/
   .credentials/   <- tunnel credentials (PRIVATE KEY!)
   .runtime/        <- pid files, state.json
-  config/          <- nxcloudflare.json, routes.json (data project asli)
+  config/          <- nxcloud.json, routes.json (data project asli)
   logs/
   web/             <- (kalau masih ada versi lama sebelum Halaman Statis dihapus)
 ```
@@ -37,7 +37,7 @@ orang lain apa adanya, private key tunnel Cloudflare ikut bocor.
   testing/debug. Copy dulu ke folder terpisah di luar `dist/` (mis.
   `test-run/` atau folder temp), baru dijalankan di sana.
 - Sebelum distribusi, pastikan `dist/` HANYA berisi:
-  - `nxcloudflare.exe` (atau `nxcloudflare` di Linux)
+  - `nxcloud.exe` (atau `nxcloud` di Linux)
   - `.tools/cloudflared.exe` (atau `.tools/cloudflared`)
   - `SHA256SUMS.txt`
   
@@ -54,13 +54,13 @@ orang lain apa adanya, private key tunnel Cloudflare ikut bocor.
 ## Cara aman untuk uji coba .exe
 
 ```bash
-mkdir -p ../nxcloudflare-test-run
-cp dist/nxcloudflare.exe ../nxcloudflare-test-run/
-cp -r dist/.tools ../nxcloudflare-test-run/
-cd ../nxcloudflare-test-run
-./nxcloudflare.exe start
+mkdir -p ../nxcloud-test-run
+cp dist/nxcloud.exe ../nxcloud-test-run/
+cp -r dist/.tools ../nxcloud-test-run/
+cd ../nxcloud-test-run
+./nxcloud.exe start
 ```
 
-State runtime yang ter-generate akan ada di `nxcloudflare-test-run/`,
+State runtime yang ter-generate akan ada di `nxcloud-test-run/`,
 bukan di `dist/` — folder build tetap bersih untuk distribusi
 berikutnya.

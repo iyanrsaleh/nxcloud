@@ -6,7 +6,7 @@
 
 | Item | Lokasi |
 | ---- | ------ |
-| Server + CLI + named tunnel | `NxCloudflare/` |
+| Server + CLI + named tunnel | `nxcloud/` |
 | Domain `nx.tirtamoolango.id` | Cloudflare + `.credentials/` |
 | REST API + `/api/routes` (Routes) | CRUD + sync `.credentials/config.yml` |
 | Client JS | `listRoutes`, `createRoute`, `updateRoute`, `deleteRoute` |
@@ -36,7 +36,7 @@
 ## Cara cek stub cepat
 
 ```text
-1. nxcloudflare start
-2. Desktop Teritip → #package/nxcloudflare/overview
+1. nxcloud start
+2. Desktop Teritip → #package/nxcloud/overview
 3. Harus muncul JSON status (bukan error fetch)
 ```

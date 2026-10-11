@@ -6,7 +6,7 @@
 
 **Latar belakang:** Setelah `Plan-domain-onboarding.md` selesai (menu
 Domain, buat subdomain otomatis), muncul pertanyaan mendasar: **di mana
-user pertama kali menghubungkan akun Cloudflare mereka ke NxCloudflare?**
+user pertama kali menghubungkan akun Cloudflare mereka ke nxcloud?**
 
 Dicek langsung:
 - `cert.pem` (hasil `cloudflared tunnel login`) **sudah ada** di mesin
@@ -14,13 +14,13 @@ Dicek langsung:
   jalan", padahal prasyaratnya diam-diam sudah terpenuhi sebelum sesi
   kerja ini dimulai.
 - **Tidak ada satupun kode**, baik di backend (`src/`) maupun Desktop UI
-  (`Desktop/templates/nxcloudflare/`), yang mengecek status login ini.
+  (`Desktop/templates/nxcloud/`), yang mengecek status login ini.
 - Disimulasikan: kalau `cert.pem` tidak ada, `cloudflared` gagal dengan
   pesan `Cannot find a valid certificate... run the command: cloudflared
   login` — pesan mentah CLI, muncul di `logs/tunnel.log`, TIDAK pernah
-  ditangkap/diterjemahkan NxCloudflare maupun ditampilkan di Desktop.
+  ditangkap/diterjemahkan nxcloud maupun ditampilkan di Desktop.
 
-**Kesimpulan:** user yang baru pasang NxCloudflare di mesin baru (belum
+**Kesimpulan:** user yang baru pasang nxcloud di mesin baru (belum
 pernah `cloudflared login`) akan mentok tanpa arahan — start gagal diam-diam
 di background, Desktop menampilkan "Gagal memuat: ..." generik di semua
 halaman, tidak ada yang bilang "hubungkan akun Cloudflare dulu, begini
@@ -55,7 +55,7 @@ manusia (user harus login & approve di browser). Jadi tujuan rencana ini
    langsung dari Desktop (browser tetap yang buka, tapi user tidak perlu
    buka terminal manual).
 3. **Mencegah** state rusak — kalau start gagal karena belum login,
-   NxCloudflare tidak boleh terus-menerus retry/crash-loop tanpa pesan
+   nxcloud tidak boleh terus-menerus retry/crash-loop tanpa pesan
    jelas.
 
 ---
@@ -89,7 +89,7 @@ sederhana") — bukan tujuan mendeteksi validitas real-time.
   `isCloudflareLoggedIn()` — cek `fs.existsSync(path.join(os.homedir(), '.cloudflared', 'cert.pem'))`.
   `triggerCloudflaredLogin()` — spawn `cloudflared tunnel login` (proses
   terpisah, TIDAK attached/blocking — proses ini membuka browser sendiri
-  dan keluar setelah user approve; NxCloudflare cukup men-trigger, tidak
+  dan keluar setelah user approve; nxcloud cukup men-trigger, tidak
   perlu menunggu hasilnya secara sinkron).
 - **`src/api/router.js`**: endpoint baru `GET /api/auth/status` (loopback-only,
   baca-saja: `{loggedIn: boolean, certPath: string}`) dan
@@ -162,7 +162,7 @@ sederhana") — bukan tujuan mendeteksi validitas real-time.
   referensi cert/tunnel ID).
 
 ### Desktop UI
-- `client/nxcloudflareApi.js` + `Desktop/lib/nxcloudflareApi.js`
+- `client/nxcloudApi.js` + `Desktop/lib/nxcloudApi.js`
   (disinkron): `getAuthStatus()`, `triggerLogin()`.
 - `domain.js`: banner merah di atas halaman kalau belum login — tombol
   **Hubungkan Akun Cloudflare** (trigger login, browser terbuka) +
@@ -188,10 +188,10 @@ sederhana") — bukan tujuan mendeteksi validitas real-time.
   tunnel production yang sedang dipakai) — logic `isCloudflareLoggedIn()`
   sesederhana `fs.existsSync()` satu baris, dipercaya benar tanpa perlu
   simulasi destruktif; correctness lebih lanjut akan terlihat natural
-  saat NxCloudflare dipasang di mesin baru yang belum pernah login.
+  saat nxcloud dipasang di mesin baru yang belum pernah login.
 
 ### Batasan yang tetap berlaku (sesuai §2, tidak berubah)
-- Proses OAuth di browser tetap manual sepenuhnya — NxCloudflare hanya
+- Proses OAuth di browser tetap manual sepenuhnya — nxcloud hanya
   men-trigger `cloudflared tunnel login`, tidak bisa otomatisasi approve.
 - Deteksi "optimistic" (`cert.pem` ada ≠ pasti masih valid) — batasan
   yang diterima demi kesederhanaan, dicatat eksplisit di §3.
@@ -209,7 +209,7 @@ Ditelusuri alur end-to-end langkah demi langkah, ditemukan 2 titik lemah:
 2. **Setelah "Sudah Login, Cek Lagi" berhasil, user harus pindah menu**
    ke Ringkasan untuk klik Restart — satu langkah ekstra yang tidak perlu.
    Diperbaiki: banner di `domain.js` sekarang berubah jadi kartu hijau
-   dengan tombol **Restart NxCloudflare** langsung di tempat begitu login
+   dengan tombol **Restart nxcloud** langsung di tempat begitu login
    terdeteksi berhasil — alur penuh (hubungkan → cek → restart) selesai
    tanpa pindah halaman.
 
@@ -227,13 +227,13 @@ Ditemukan 2 hal:
 ### 8.1 Klarifikasi penting: default instalasi baru = mode `quick`, BUKAN `named`
 
 `DEFAULTS` di `src/config.js` — `cloudflare.mode: 'quick'`, bukan
-`'named'`. Config `nxcloudflare.json` di repo ini adalah hasil
+`'named'`. Config `nxcloud.json` di repo ini adalah hasil
 kustomisasi mesin developer, BUKAN representasi instalasi baru.
 
 **Konsekuensi:** cek login di `src/index.js` (§7, sengaja dibatasi ke
 mode `named` saja) **tidak pernah terpicu** untuk instalasi default —
 karena Quick Tunnel memang tidak butuh akun. User baru dengan config
-default bisa langsung `nxcloudflare start` dan dapat URL publik
+default bisa langsung `nxcloud start` dan dapat URL publik
 `*.trycloudflare.com` tanpa login sama sekali. Ini SESUAI DESAIN, bukan
 bug — dikonfirmasi ulang dari `cloudflare/config.js` (mode quick =
 `cloudflared tunnel --url <service>`, tanpa referensi cert/tunnel ID).
@@ -281,8 +281,8 @@ Banner baru (`#nxcf-domain-banner`) muncul kalau `rootDomain` kosong —
 warna kuning/oranye (beda dari merah untuk belum-login), isinya instruksi
 konkret dua baris CLI yang bisa langsung disalin:
 ```
-nxcloudflare config set cloudflare.hostname nx.namadomainanda.com
-nxcloudflare config set cloudflare.mode named
+nxcloud config set cloudflare.hostname nx.namadomainanda.com
+nxcloud config set cloudflare.mode named
 ```
 plus penjelasan singkat dan arahan klik Refresh setelahnya.
 

@@ -1,17 +1,17 @@
 {
-  "name": "nxcloudflare",
+  "name": "nxcloud",
   "version": "0.1.0",
   "description": "Local Node.js server manager with Cloudflare Tunnel",
   "type": "module",
   "bin": {
-    "nxcloudflare": "./bin/nxcloudflare.js"
+    "nxcloud": "./bin/nxcloud.js"
   },
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
-    "cli": "node bin/nxcloudflare.js",
+    "cli": "node bin/nxcloud.js",
     "link": "npm link",
-    "unlink": "npm unlink -g nxcloudflare",
+    "unlink": "npm unlink -g nxcloud",
     "build:exe": "node scripts/build-exe.mjs",
     "build:exe:linux": "node scripts/build-exe-linux.mjs"
   },

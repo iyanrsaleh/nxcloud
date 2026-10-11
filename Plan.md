@@ -1,4 +1,4 @@
-# Plan Kerja — NxCloudflare
+# Plan Kerja — nxcloud
 
 > Dokumen ini adalah rencana eksekusi. `README.md` dianggap **draft awal** (gambaran arah), bukan spesifikasi mutlak. Keputusan teknis dapat disesuaikan saat implementasi.
 
@@ -10,7 +10,7 @@
 
 ## 1. Ringkasan analisis
 
-### Apa itu NxCloudflare
+### Apa itu nxcloud
 
 Server Node.js lokal + CLI yang mengelola **Cloudflare Tunnel** (`cloudflared`) agar layanan di PC bisa diakses lewat HTTPS publik tanpa port forwarding / IP publik.
 
@@ -63,11 +63,11 @@ Karena README draft, keputusan berikut perlu dikunci sebelum/saat coding. Defaul
 
 - Inisialisasi `package.json` (name, bin, scripts, type module)
 - Buat struktur folder sesuai README §5 (disesuaikan bila perlu)
-- Entry `bin/nxcloudflare.js` → router CLI
-- `config/nxcloudflare.json` default (`127.0.0.1:8787`)
+- Entry `bin/nxcloud.js` → router CLI
+- `config/nxcloud.json` default (`127.0.0.1:8787`)
 - Folder `logs/` (+ `.gitignore` untuk log & secrets)
 
-**Hasil:** `node bin/nxcloudflare.js --help` berjalan.
+**Hasil:** `node bin/nxcloud.js --help` berjalan.
 
 ---
 
@@ -75,7 +75,7 @@ Karena README draft, keputusan berikut perlu dikunci sebelum/saat coding. Defaul
 
 | Modul | Tanggung jawab |
 | ----- | -------------- |
-| `src/config.js` | Baca/validasi `config/nxcloudflare.json` |
+| `src/config.js` | Baca/validasi `config/nxcloud.json` |
 | `src/logger.js` | Level INFO/WARN/ERROR/DEBUG → console + file |
 | `src/server.js` | HTTP server localhost |
 | `src/index.js` | Orkestrasi start server |
@@ -127,7 +127,7 @@ Urutan implementasi tunnel:
 3. Parse / tampilkan URL `*.trycloudflare.com`
 4. (Opsional di fase ini) Named tunnel + hostname jika config lengkap
 
-`nxcloudflare start` lifecycle (README §12):
+`nxcloud start` lifecycle (README §12):
 
 ```text
 baca config → validasi → start HTTP → cek cloudflared → start tunnel → status
@@ -140,7 +140,7 @@ baca config → validasi → start HTTP → cek cloudflared → start tunnel →
 ### Fase E — Stabilisasi proses & observasi
 
 - PID tracking (Node + cloudflared)
-- Status tunnel di `/status` dan `nxcloudflare status` / `tunnel`
+- Status tunnel di `/status` dan `nxcloud status` / `tunnel`
 - Log terpisah: `server.log`, `tunnel.log`, `error.log`
 - Shutdown: stop tunnel dulu, lalu HTTP server
 
@@ -164,9 +164,9 @@ Urutan usulan (selaras README §26–27, bisa diubah):
 ## 4. Struktur target (Fase A–E)
 
 ```text
-NxCloudflare/
+nxcloud/
 ├── bin/
-│   └── nxcloudflare.js
+│   └── nxcloud.js
 ├── src/
 │   ├── index.js
 │   ├── server.js
@@ -189,7 +189,7 @@ NxCloudflare/
 │       ├── process.js
 │       └── paths.js
 ├── config/
-│   └── nxcloudflare.json
+│   └── nxcloud.json
 ├── logs/                 # runtime, di-gitignore
 ├── package.json
 ├── .gitignore
@@ -225,20 +225,20 @@ Mengikuti pola persis `D:\Framework\CLI\Teritip` dan `D:\Framework\CLI\nxdom`
 
 **Perubahan file:**
 - `src/utils/paths.js` — `ROOT_DIR` sekarang `isSea() ? path.dirname(process.execPath) : sourcePackageRoot()`, supaya `config/`, `logs/`, `.runtime/`, `.credentials/`, `web/` tetap portable di sebelah `.exe` alih-alih ikut ke path virtual blob.
-- `scripts/build-exe.mjs` — baru, adaptasi dari `nxdom/scripts/build-exe.mjs`: esbuild bundle (`bin/nxcloudflare.js` → CJS) + `node --experimental-sea-config` + `postject` inject blob + strip Windows signature + checksum SHA-256.
+- `scripts/build-exe.mjs` — baru, adaptasi dari `nxdom/scripts/build-exe.mjs`: esbuild bundle (`bin/nxcloud.js` → CJS) + `node --experimental-sea-config` + `postject` inject blob + strip Windows signature + checksum SHA-256.
 - `package.json` — tambah `devDependencies` (`esbuild`, `postject`) dan `scripts.build:exe`.
-- `.gitignore` — tambah `dist/` dan `.nxcloudflare-exe-build/`.
+- `.gitignore` — tambah `dist/` dan `.nxcloud-exe-build/`.
 
 **Diverifikasi (2026-09-11):**
-- `npm run build:exe` → `dist/nxcloudflare.exe` berhasil dibuat.
-- `dist/nxcloudflare.exe config path` → resolve ke `dist/config/...` (bukan source folder) — path resolution SEA benar.
-- `dist/nxcloudflare.exe start --no-tunnel` → server + web static jalan normal; `web/` yang belum disalin → 404 graceful (bukan crash).
-- Setelah menyalin `web/`, `.tools/cloudflared.exe`, `.credentials/`, `config/nxcloudflare.json` ke `dist/`: `dist/nxcloudflare.exe start` (tunnel penuh) → tunnel `named` connect ke `nx.tirtamoolango.id`, endpoint publik (`/health`, `web.tirtamoolango.id`) 200, endpoint loopback-only (`/api/config`) tetap 403 dari publik — perilaku keamanan konsisten dengan mode `node src/index.js`.
+- `npm run build:exe` → `dist/nxcloud.exe` berhasil dibuat.
+- `dist/nxcloud.exe config path` → resolve ke `dist/config/...` (bukan source folder) — path resolution SEA benar.
+- `dist/nxcloud.exe start --no-tunnel` → server + web static jalan normal; `web/` yang belum disalin → 404 graceful (bukan crash).
+- Setelah menyalin `web/`, `.tools/cloudflared.exe`, `.credentials/`, `config/nxcloud.json` ke `dist/`: `dist/nxcloud.exe start` (tunnel penuh) → tunnel `named` connect ke `nx.tirtamoolango.id`, endpoint publik (`/health`, `web.tirtamoolango.id`) 200, endpoint loopback-only (`/api/config`) tetap 403 dari publik — perilaku keamanan konsisten dengan mode `node src/index.js`.
 
 **Yang perlu diingat untuk distribusi `.exe` ke PC lain:**
 - `.tools/cloudflared.exe` **tidak** ikut ter-bundle di dalam `.exe` — harus disalin manual ke `dist/.tools/cloudflared.exe`.
 - `.credentials/` (kredensial tunnel) juga tidak boleh ikut ter-bundle/dibagi — tiap instalasi/PC idealnya punya tunnel & kredensial sendiri, bukan menyalin punya PC ini.
-- `config/nxcloudflare.json` default masih `mode: quick`, `hostname: ""` — untuk instalasi baru, konfigurasi ulang lewat `nxcloudflare config set` sebelum `start` mode `named`.
+- `config/nxcloud.json` default masih `mode: quick`, `hostname: ""` — untuk instalasi baru, konfigurasi ulang lewat `nxcloud config set` sebelum `start` mode `named`.
 
 ### F2 — Kesiapan lintas platform (Windows exe + Linux, sesuai README §4) — ✅ SUDAH DIEKSEKUSI (2026-09-11)
 
@@ -265,7 +265,7 @@ Windows dulu — bagian ini menyiapkan fondasinya).
 **Build Linux ditambahkan (sebelumnya cuma ada untuk Windows di F1):**
 - `scripts/build-exe-linux.mjs` — baru, adaptasi persis dari
   `Teritip/scripts/build-exe-linux.mjs`: sama seperti `build-exe.mjs`
-  tapi tanpa `stripWindowsSignature`, output tanpa ekstensi (`dist/nxcloudflare`),
+  tapi tanpa `stripWindowsSignature`, output tanpa ekstensi (`dist/nxcloud`),
   `chmod 755`. **Belum dijalankan/dites** — perlu Linux x64 asli atau WSL2
   (batasan Node SEA: builder harus jalan di platform yang sama dengan target,
   tidak bisa cross-compile Windows→Linux).
@@ -276,7 +276,7 @@ Windows dulu — bagian ini menyiapkan fondasinya).
   connect, semua endpoint publik/loopback-only berperilaku sama seperti
   sebelum perubahan.
 - `.exe` Windows di-rebuild ulang (`npm run build:exe`) dengan fix ini
-  ikut ter-bundle — dites penuh sekali lagi (`dist/nxcloudflare.exe start`
+  ikut ter-bundle — dites penuh sekali lagi (`dist/nxcloud.exe start`
   dengan `web/`, `.tools/cloudflared.exe`, `.credentials/`, `config/`
   disalin ke `dist/`): semua endpoint 200/403 sesuai ekspektasi, tidak ada
   regresi dari perubahan cross-platform.
@@ -284,7 +284,7 @@ Windows dulu — bagian ini menyiapkan fondasinya).
 **Belum dieksekusi / catatan untuk migrasi Linux nanti:**
 - `scripts/build-exe-linux.mjs` belum pernah benar-benar dijalankan (perlu
   akses Linux x64/WSL2) — logikanya mengikuti pola Teritip yang sudah
-  terbukti berhasil, tapi NxCloudflare-nya sendiri belum diuji nyata di Linux.
+  terbukti berhasil, tapi nxcloud-nya sendiri belum diuji nyata di Linux.
 - `.credentials/config.yml.example` sudah diubah ke path relatif
   (portable Windows/Linux), TAPI `.credentials/config.yml` **asli/aktif**
   (dipakai tunnel live sekarang) sengaja **tidak** diubah — masih absolut
