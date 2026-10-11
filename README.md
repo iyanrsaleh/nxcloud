@@ -4,7 +4,7 @@
 
 nxcloud berdiri sebagai proyek mandiri.
 
-## Instalasi (sama pola Teritip)
+## Instalasi
 
 nxcloud pakai JavaScript murni — **tidak ada dependency npm runtime**, jadi folder `node_modules/` biasanya **tidak muncul** (itu normal, bukan kurang install). Dependency opsional hanya jika nanti ditambah; CLI jalan tanpa `npm install`.
 
