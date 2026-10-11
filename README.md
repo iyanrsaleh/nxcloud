@@ -36,6 +36,65 @@ Cabut link global:
 npm unlink -g nxcloud
 ```
 
+## Instalasi di Linux
+
+Kode sudah cross-platform (deteksi platform otomatis: `taskkill`/`where` di Windows, `kill`/`which` di Linux, nama binary `cloudflared` disesuaikan).
+
+1. Install Node.js 18+ dan cloudflared:
+
+```bash
+# Debian/Ubuntu
+curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+sudo dpkg -i cloudflared.deb
+
+# Atau taruh binary manual di .tools/
+mkdir -p .tools
+curl -L -o .tools/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+chmod +x .tools/cloudflared
+```
+
+2. Jalankan dari source:
+
+```bash
+cd ~/nxcloud
+node bin/nxcloud.js start
+```
+
+3. Atau build single executable Linux:
+
+```bash
+npm run build:exe:linux   # di Linux x64 / WSL2, Node 20+
+./dist/nxcloud start
+```
+
+4. Jalankan sebagai service systemd (opsional):
+
+```bash
+sudo tee /etc/systemd/system/nxcloud.service > /dev/null <<EOF
+[Unit]
+Description=nxcloud - local Node.js server + Cloudflare Tunnel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$HOME/nxcloud
+ExecStart=$(which node) $HOME/nxcloud/bin/nxcloud.js start
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now nxcloud
+systemctl status nxcloud
+```
+
+Log: `journalctl -u nxcloud -f` atau `nxcloud logs`.
+
 ---
 
 ## 1. Tujuan
