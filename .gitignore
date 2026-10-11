@@ -11,6 +11,7 @@ Plan.md
 Plan-*.md
 digram.md
 package-lock.json
+docs/
 .env
 .env.*
 !.env.example
