@@ -1,0 +1,33 @@
+{
+  "name": "nxcloudflare",
+  "version": "0.1.0",
+  "description": "Local Node.js server manager with Cloudflare Tunnel",
+  "type": "module",
+  "bin": {
+    "nxcloudflare": "./bin/nxcloudflare.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "cli": "node bin/nxcloudflare.js",
+    "link": "npm link",
+    "unlink": "npm unlink -g nxcloudflare",
+    "build:exe": "node scripts/build-exe.mjs",
+    "build:exe:linux": "node scripts/build-exe-linux.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "cloudflare",
+    "tunnel",
+    "cloudflared",
+    "local-server",
+    "cli"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "postject": "^1.0.0-alpha.6"
+  }
+}

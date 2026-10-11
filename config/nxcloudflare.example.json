@@ -1,0 +1,24 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8787
+  },
+  "cloudflare": {
+    "enabled": true,
+    "mode": "named",
+    "rootDomains": [
+      "example.com"
+    ],
+    "service": "http://127.0.0.1:8787",
+    "tunnelName": "nxcloudflare",
+    "cloudflaredConfig": ".credentials/config.yml",
+    "apiToken": ""
+  },
+  "logging": {
+    "level": "INFO"
+  },
+  "api": {
+    "allowControl": false,
+    "controlToken": ""
+  }
+}

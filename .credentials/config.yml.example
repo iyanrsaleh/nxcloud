@@ -1,0 +1,13 @@
+# Rename this file to config.yml after filling tunnel id + credentials path.
+# credentials-file below is relative to this file's folder (.credentials/) —
+# use a relative path so the same config works on Windows and Linux.
+# Absolute path also works if you prefer (Windows: C:\path\to\...json,
+# Linux: /path/to/...json), just avoid mixing separators.
+
+tunnel: REPLACE_WITH_TUNNEL_ID
+credentials-file: REPLACE_WITH_TUNNEL_ID.json
+
+ingress:
+  - hostname: nx.tirtamoolango.id
+    service: http://127.0.0.1:8787
+  - service: http_status:404

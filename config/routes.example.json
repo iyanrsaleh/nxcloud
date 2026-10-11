@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "id": "app",
+      "name": "My App",
+      "hostname": "app.example.com",
+      "origin": "http://127.0.0.1:8787",
+      "kind": "internal",
+      "enabled": true,
+      "publicUrl": "https://app.example.com",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z"
+    }
+  ],
+  "updatedAt": "2026-01-01T00:00:00.000Z"
+}
