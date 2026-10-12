@@ -8,6 +8,6 @@ tunnel: REPLACE_WITH_TUNNEL_ID
 credentials-file: REPLACE_WITH_TUNNEL_ID.json
 
 ingress:
-  - hostname: nx.tirtamoolango.id
+  - hostname: nx.exsampel.id
     service: http://127.0.0.1:8787
   - service: http_status:404
