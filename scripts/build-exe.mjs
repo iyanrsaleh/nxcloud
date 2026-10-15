@@ -78,6 +78,12 @@ try {
             "import.meta.url": JSON.stringify(
                 "file:///__nxcloud_sea__/src/utils/paths.js"
             ),
+            // package.json tidak ikut ke blob, jadi versi di-inject saat build
+            // (dibaca getVersion() di src/utils/paths.js) agar API/CLI tidak
+            // melaporkan versi yang salah/0.0.0.
+            __NXCLOUD_VERSION__: JSON.stringify(
+                JSON.parse(await fs.readFile(path.join(root, "package.json"), "utf8")).version
+            ),
         },
         logLevel: "info",
     });

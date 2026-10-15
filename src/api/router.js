@@ -18,6 +18,7 @@ import {
   getLoginState
 } from '../cloudflare/auth.js';
 import { hasApiToken } from '../cloudflare/api.js';
+import { getVersion } from '../utils/paths.js';
 
 /**
  * Public config view — strip secrets / absolute credential paths noise.
@@ -115,7 +116,7 @@ export async function handleApi(ctx) {
       status: 200,
       body: {
         service: 'nxcloud API',
-        version: '0.2.0',
+        version: getVersion(),
         endpoints: [
           'GET /api/health',
           'GET /api/status',

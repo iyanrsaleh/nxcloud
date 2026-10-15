@@ -231,6 +231,35 @@ export function deleteRoute(id) {
 }
 
 /**
+ * Render the cloudflared ingress block text for a set of routes. Pure (no file
+ * or config access) so it can be tested without touching the real store; the
+ * writer below reuses it. Always ends with the catch-all 404 service.
+ */
+export function renderIngress(routes) {
+  const enabledRoutes = (routes || []).filter((r) => r.enabled && r.hostname);
+  const ingressLines = ['ingress:'];
+  for (const r of enabledRoutes) {
+    ingressLines.push(`  - hostname: ${r.hostname}`);
+    ingressLines.push(`    service: ${r.origin}`);
+  }
+  ingressLines.push('  - service: http_status:404');
+  ingressLines.push('');
+  return { text: ingressLines.join('\n'), hostnames: enabledRoutes.map((r) => r.hostname) };
+}
+
+/**
+ * Replace the ingress block in an existing cloudflared config file body,
+ * preserving everything before it. Pure string transform.
+ */
+export function applyIngressToConfig(configText, ingressText) {
+  const text = String(configText || '');
+  if (/(\r?\n)ingress:[\s\S]*$/m.test(text) || /^ingress:/m.test(text)) {
+    return text.replace(/(^|\r?\n)ingress:[\s\S]*$/m, `$1${ingressText}`);
+  }
+  return `${text.trimEnd()}\n\n${ingressText}`;
+}
+
+/**
  * Rewrite cloudflared config ingress from enabled routes — this is the
  * single place that writes the ingress block.
  * Tunnel process must be restarted to apply.
@@ -248,28 +277,13 @@ export function syncCloudflaredIngress(routes) {
     };
   }
 
-  const enabledRoutes = (routes || readAll().routes).filter((r) => r.enabled && r.hostname);
-  let text = fs.readFileSync(configPath, 'utf8');
-
-  const ingressLines = ['ingress:'];
-  for (const r of enabledRoutes) {
-    ingressLines.push(`  - hostname: ${r.hostname}`);
-    ingressLines.push(`    service: ${r.origin}`);
-  }
-  ingressLines.push('  - service: http_status:404');
-  ingressLines.push('');
-
-  if (/(\r?\n)ingress:[\s\S]*$/m.test(text) || /^ingress:/m.test(text)) {
-    text = text.replace(/(^|\r?\n)ingress:[\s\S]*$/m, `$1${ingressLines.join('\n')}`);
-  } else {
-    text = `${text.trimEnd()}\n\n${ingressLines.join('\n')}`;
-  }
-
+  const { text: ingressText, hostnames } = renderIngress(routes || readAll().routes);
+  const text = applyIngressToConfig(fs.readFileSync(configPath, 'utf8'), ingressText);
   fs.writeFileSync(configPath, text.endsWith('\n') ? text : `${text}\n`, 'utf8');
   return {
     written: true,
     path: configPath,
-    hostnames: enabledRoutes.map((r) => r.hostname),
+    hostnames,
     note: 'Restart nxcloud (tunnel) to apply ingress changes. Add DNS CNAME per hostname if missing.'
   };
 }

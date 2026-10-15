@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isSea } from 'node:sea';
@@ -6,6 +7,25 @@ function sourcePackageRoot() {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   return path.resolve(__dirname, '..', '..');
+}
+
+/**
+ * Version reported by the API/CLI. Prefer a build-time injected constant (SEA
+ * builds replace it via esbuild `define`, since package.json is not next to a
+ * standalone exe); otherwise read package.json from the source tree. Read from
+ * one place so it can never drift from what was actually built — it previously
+ * was a hardcoded string that disagreed with package.json.
+ */
+export function getVersion() {
+  if (typeof __NXCLOUD_VERSION__ === 'string' && __NXCLOUD_VERSION__) {
+    return __NXCLOUD_VERSION__;
+  }
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(sourcePackageRoot(), 'package.json'), 'utf8'));
+    return pkg.version || '0.0.0';
+  } catch {
+    return '0.0.0';
+  }
 }
 
 /**

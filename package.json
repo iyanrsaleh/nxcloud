@@ -12,6 +12,7 @@
     "cli": "node bin/nxcloud.js",
     "link": "npm link",
     "unlink": "npm unlink -g nxcloud",
+    "test": "node --test tests/*.test.js",
     "build:exe": "node scripts/build-exe.mjs",
     "build:exe:linux": "node scripts/build-exe-linux.mjs"
   },
