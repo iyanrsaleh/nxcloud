@@ -1,0 +1,68 @@
+name: release
+
+# Build the standalone executables when a version tag is pushed and attach
+# them to the matching GitHub Release. Windows binaries can only be built on
+# Windows and Linux on Linux (see scripts/build-exe*.mjs), so both run here in
+# one matrix instead of relying on someone building and uploading by hand.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  build:
+    needs: test
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            script: build:exe
+            artifact: dist/nxcloud.exe
+            checksum: dist/SHA256SUMS.txt
+          - os: ubuntu-latest
+            script: build:exe:linux
+            artifact: dist/nxcloud
+            checksum: dist/SHA256SUMS.txt
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+
+      - name: Verify tag matches package.json version
+        shell: bash
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          TAG="${GITHUB_REF_NAME}"
+          if [ "$PKG_VERSION" != "$TAG" ]; then
+            echo "Tag $TAG does not match package.json version $PKG_VERSION"
+            exit 1
+          fi
+
+      - name: Build standalone executable
+        run: npm run ${{ matrix.script }}
+
+      - name: Attach executable to the GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ matrix.artifact }}
+            ${{ matrix.checksum }}
+          fail_on_unmatched_files: true
